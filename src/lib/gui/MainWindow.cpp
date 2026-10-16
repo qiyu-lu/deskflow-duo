@@ -513,7 +513,7 @@ void MainWindow::clearSettings()
 
   m_coreProcess.stop();
   m_coreProcess.clearSettings();
-  m_syncManager->stop();
+  m_syncManager->shutdown();
 
   m_saveOnExit = false;
   diagnostic::clearSettings(true);
@@ -1010,7 +1010,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
   // disconnect them before accepting the event
   disconnect(m_logDock->toggleViewAction(), &QAction::toggled, nullptr, nullptr);
 
-  m_syncManager->stop();
+  m_syncManager->shutdown();
 
   event->accept();
   QApplication::quit();

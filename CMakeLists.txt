@@ -24,6 +24,7 @@ endif()
 #Project level options
 option(BUILD_INSTALLER "Build installer" ON)
 option(ENABLE_COVERAGE "Enable test coverage" OFF)
+set(SYNCTHING_BINARY "" CACHE FILEPATH "Syncthing executable to bundle for the file sync feature (optional)")
 if(UNIX)
   if(APPLE)
     option(BUILD_OSX_BUNDLE "Build mac os bundle" ON)

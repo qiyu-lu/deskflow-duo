@@ -48,6 +48,15 @@ list(APPEND CPACK_WIX_EXTENSIONS "WixToolset.Util.wixext" "WixToolset.Firewall.w
 list(APPEND CPACK_WIX_CUSTOM_XMLNS "util=http://wixtoolset.org/schemas/v4/wxs/util" "firewall=http://wixtoolset.org/schemas/v4/wxs/firewall")
 
 # The patch has to know the full path of our msm file
+set(SYNCTHING_WIX_FRAGMENT "")
+if(SYNCTHING_BINARY)
+  set(SYNCTHING_WIX_FRAGMENT [=[
+  <CPackWiXFragment Id="CM_CP_syncthing.exe">
+    <firewall:FirewallException Id="SyncthingFirewallException" Name="Deskflow File Sync" Program="[INSTALL_ROOT]syncthing.exe" Scope="any"/>
+  </CPackWiXFragment>
+]=])
+endif()
+
 configure_file(
   ${MY_DIR}/wix-patch.xml.in
   ${CMAKE_CURRENT_BINARY_DIR}/wix-patch.xml @ONLY

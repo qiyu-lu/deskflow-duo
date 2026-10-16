@@ -24,6 +24,7 @@
     <firewall:FirewallException Id="ServerFirewallException" Name="Deskflow Server" Program="[INSTALL_ROOT]deskflow-core.exe" Scope="any"/>
     <firewall:FirewallException Id="ClientFirewallException" Name="Deskflow Client" Program="[INSTALL_ROOT]deskflow-core.exe" Scope="any"/>
   </CPackWiXFragment>
+@SYNCTHING_WIX_FRAGMENT@
 
   <CPackWiXFragment Id="#PRODUCT">
     <Property Id="VC_REDIST_INSTALLED">
@@ -54,6 +55,12 @@
       Id="CloseDeskflowCore"
       Target="deskflow-core.exe"
       CloseMessage="yes"
+      RebootPrompt="no"
+      TerminateProcess="10" />
+    <util:CloseApplication
+      Id="CloseDeskflowSyncthing"
+      Target="syncthing.exe"
+      CloseMessage="no"
       RebootPrompt="no"
       TerminateProcess="10" />
     <util:CloseApplication

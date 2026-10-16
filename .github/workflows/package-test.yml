@@ -20,6 +20,9 @@ env:
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_INSTALLER=ON
     -DSKIP_BUILD_TESTS=ON -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
   PACKAGE_LABEL: input-broadcast-v0.2.0
+  SYNCTHING_VERSION: v2.1.6
+  SYNCTHING_SHA256_WINDOWS_AMD64: 589098269cabb9a5a1703a934305b4153609d7623e978e1c94f0f49d77ae5e9f
+  SYNCTHING_SHA256_LINUX_AMD64: 524ef4e1df1850b719e2378c8369956f4e5f2ab9a46fdf7f45f2b925012147aa
 
 jobs:
   windows-x64:
@@ -46,11 +49,24 @@ jobs:
           qt-version: 6.11.2
           vcpkg-triplet: x64-windows-release
 
+      - name: Download Syncthing
+        id: syncthing
+        shell: pwsh
+        run: |
+          $url = "https://github.com/syncthing/syncthing/releases/download/$env:SYNCTHING_VERSION/syncthing-windows-amd64-$env:SYNCTHING_VERSION.zip"
+          Invoke-WebRequest -Uri $url -OutFile syncthing.zip
+          $hash = (Get-FileHash syncthing.zip -Algorithm SHA256).Hash.ToLower()
+          if ($hash -ne $env:SYNCTHING_SHA256_WINDOWS_AMD64) { throw "syncthing checksum mismatch: $hash" }
+          Expand-Archive syncthing.zip -DestinationPath syncthing-dist
+          $exe = Get-ChildItem -Recurse syncthing-dist -Filter syncthing.exe | Select-Object -First 1
+          "path=$($exe.FullName)" >> $env:GITHUB_OUTPUT
+
       - name: Configure
         run: >-
           ${{ env.CMAKE_CONFIGURE }} -G Ninja
           ${{ steps.deps.outputs.vcpkg-cmake-config }}
           -DPACKAGE_VERSION_LABEL=${{ env.PACKAGE_LABEL }}
+          -DSYNCTHING_BINARY=${{ steps.syncthing.outputs.path }}
 
       - name: Build packages
         run: cmake --build build --config Release -j8 --target package
@@ -80,7 +96,7 @@ jobs:
       - name: Install Git
         run: |
           apt-get update -qqq > /dev/null
-          apt-get install -qqq git devscripts > /dev/null
+          apt-get install -qqq git devscripts curl ca-certificates > /dev/null
 
       - name: Checkout
         uses: actions/checkout@v6
@@ -92,10 +108,19 @@ jobs:
         with:
           like: debian
 
+      - name: Download Syncthing
+        id: syncthing
+        run: |
+          curl -sSL -o syncthing.tar.gz "https://github.com/syncthing/syncthing/releases/download/${SYNCTHING_VERSION}/syncthing-linux-amd64-${SYNCTHING_VERSION}.tar.gz"
+          echo "${SYNCTHING_SHA256_LINUX_AMD64}  syncthing.tar.gz" | sha256sum -c -
+          tar xzf syncthing.tar.gz
+          echo "path=$(pwd)/syncthing-linux-amd64-${SYNCTHING_VERSION}/syncthing" >> "$GITHUB_OUTPUT"
+
       - name: Configure
         run: >-
           ${{ env.CMAKE_CONFIGURE }} -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
           -DPACKAGE_VERSION_LABEL=${{ env.PACKAGE_LABEL }}
+          -DSYNCTHING_BINARY=${{ steps.syncthing.outputs.path }}
 
       - name: Build package
         run: cmake --build build --config Release -j8 --target package

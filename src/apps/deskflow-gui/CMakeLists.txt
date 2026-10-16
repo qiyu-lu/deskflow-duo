@@ -56,6 +56,30 @@ install(
   BUNDLE DESTINATION .
 )
 
+# Bundle a syncthing executable for the file sync feature when one is given.
+# The gui looks next to its own executable first and in lib/deskflow on linux.
+if(SYNCTHING_BINARY)
+  if(NOT EXISTS "${SYNCTHING_BINARY}")
+    message(FATAL_ERROR "SYNCTHING_BINARY does not exist: ${SYNCTHING_BINARY}")
+  endif()
+  if(WIN32)
+    set(SYNCTHING_INSTALL_NAME syncthing.exe)
+  else()
+    set(SYNCTHING_INSTALL_NAME syncthing)
+  endif()
+  if(WIN32 OR APPLE)
+    set(SYNCTHING_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
+  else()
+    set(SYNCTHING_INSTALL_DIR lib/${CMAKE_PROJECT_NAME})
+  endif()
+  install(PROGRAMS "${SYNCTHING_BINARY}" DESTINATION ${SYNCTHING_INSTALL_DIR} RENAME ${SYNCTHING_INSTALL_NAME})
+  add_custom_command(
+    TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SYNCTHING_BINARY}" "$<TARGET_FILE_DIR:${target}>/${SYNCTHING_INSTALL_NAME}"
+  )
+  message(STATUS "Bundling syncthing: ${SYNCTHING_BINARY} -> ${SYNCTHING_INSTALL_DIR}/${SYNCTHING_INSTALL_NAME}")
+endif()
+
 if(WIN32)
   set_target_properties(${target} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:LIBCMT")
 

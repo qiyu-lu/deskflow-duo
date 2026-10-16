@@ -10,6 +10,8 @@ finish-args:
   - --share=network
   - --device=dri
   - --talk-name=org.kde.StatusNotifierWatcher
+  # synced folders live in the home directory
+  - --filesystem=home
 cleanup:
   - /include
   - "*.a"
@@ -66,6 +68,16 @@ modules:
         url: https://github.com/flatpak/libportal.git
         tag: 0.10.0
         commit: c23024018c8eb076549a1517fcb2d7f80d3e2ed5
+  - name: syncthing
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 syncthing /app/bin/syncthing
+    sources:
+      - type: archive
+        url: https://github.com/syncthing/syncthing/releases/download/v2.1.6/syncthing-linux-amd64-v2.1.6.tar.gz
+        sha256: 524ef4e1df1850b719e2378c8369956f4e5f2ab9a46fdf7f45f2b925012147aa
+        only-arches:
+          - x86_64
   - name: deskflow
     buildsystem: cmake-ninja
     config-opts:

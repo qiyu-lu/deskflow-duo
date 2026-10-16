@@ -36,6 +36,11 @@ public:
   void start();
   void stop();
 
+  /**
+   * @brief Ask the instance to shut down and wait for it, used when the application quits.
+   */
+  void shutdown(int timeoutMs = 5000);
+
   SyncthingProcess *process() const
   {
     return m_process;

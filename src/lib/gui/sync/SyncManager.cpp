@@ -10,8 +10,10 @@
 #include "common/Settings.h"
 
 #include <QDir>
+#include <QEventLoop>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QTimer>
 
 namespace deskflow::gui::sync {
 
@@ -58,6 +60,29 @@ void SyncManager::stop()
   }
   m_client->clearEndpoint();
   m_process->stop();
+}
+
+void SyncManager::shutdown(int timeoutMs)
+{
+  m_monitor->setActive(false);
+  if (!m_process->isRunning()) {
+    m_client->clearEndpoint();
+    m_process->stop();
+    return;
+  }
+
+  QEventLoop loop;
+  QTimer::singleShot(timeoutMs, &loop, &QEventLoop::quit);
+  connect(m_process, &SyncthingProcess::stateChanged, &loop, [&loop](SyncthingProcess::State state) {
+    if (state == SyncthingProcess::State::Stopped || state == SyncthingProcess::State::Failed) {
+      loop.quit();
+    }
+  });
+  // a clean shutdown through the API works everywhere; the signal is the fallback on unix
+  m_client->shutdown({});
+  m_process->stop();
+  loop.exec();
+  m_client->clearEndpoint();
 }
 
 QString SyncManager::folderPath() const
