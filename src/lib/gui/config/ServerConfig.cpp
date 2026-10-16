@@ -272,6 +272,27 @@ void ServerConfig::addClient(const QString &clientName)
   m_Screens.addScreenByPriority(Screen(clientName));
 }
 
+void ServerConfig::setupTwoComputerLayout(const QString &clientName, bool clientOnLeft)
+{
+  setupScreens();
+
+  int serverIndex = serverDefaultIndex;
+  if (serverIndex >= screens().size()) {
+    serverIndex = screens().size() / 2;
+  }
+  // keep the server away from the grid edge so a neighbour fits on either side
+  const int column = serverIndex % m_columns;
+  if (column == 0) {
+    serverIndex++;
+  } else if (column == m_columns - 1) {
+    serverIndex--;
+  }
+
+  m_Screens[serverIndex].setName(Settings::value(Settings::Core::ComputerName).toString());
+  m_Screens[serverIndex].markAsServer();
+  m_Screens[clientOnLeft ? serverIndex - 1 : serverIndex + 1] = Screen(clientName);
+}
+
 void ServerConfig::setConfigFile(const QString &configFile) const
 {
   Settings::setValue(Settings::Server::ExternalConfigFile, configFile);

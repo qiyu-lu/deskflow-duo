@@ -30,6 +30,7 @@
 #include "gui/core/CoreProcess.h"
 #include "gui/ipc/DaemonIpcClient.h"
 #include "gui/widgets/LogDock.h"
+#include "gui/widgets/OverviewPage.h"
 #include "net/FingerprintDatabase.h"
 #include "widgets/StatusBar.h"
 
@@ -49,6 +50,7 @@
 #include <QRegularExpressionValidator>
 #include <QScreen>
 #include <QScrollBar>
+#include <QStackedWidget>
 #include <QToolButton>
 
 #include <memory>
@@ -72,6 +74,7 @@ MainWindow::MainWindow()
       m_menuView{new QMenu(this)},
       m_menuHelp{new QMenu(this)},
       m_mouseBroadcastTargetsMenu{new QMenu(this)},
+      m_menuAdvanced{new QMenu(this)},
       m_actionAbout{new QAction(this)},
       m_actionMinimize{new QAction(this)},
       m_actionQuit{new QAction(this)},
@@ -83,7 +86,13 @@ MainWindow::MainWindow()
       m_actionStopCore{new QAction(this)},
       m_actionShowHelp{new QAction(this)},
       m_actionStopInputBroadcast{new QAction(this)},
-      m_networkMonitor{new NetworkMonitor(this)}
+      m_actionPair{new QAction(this)},
+      m_actionShowFullUi{new QAction(this)},
+      m_actionConfigureServer{new QAction(this)},
+      m_actionConfigureClient{new QAction(this)},
+      m_actionOpenSyncthingUi{new QAction(this)},
+      m_networkMonitor{new NetworkMonitor(this)},
+      m_syncManager{new sync::SyncManager(this)}
 {
   ui->setupUi(this);
 
@@ -127,6 +136,17 @@ MainWindow::MainWindow()
   m_actionShowHelp->setMenuRole(QAction::NoRole);
   m_actionShowHelp->setShortcut(QKeySequence::HelpContents);
 
+  m_actionPair->setIcon(QIcon::fromTheme(QStringLiteral("network-connect")));
+  m_actionPair->setMenuRole(QAction::NoRole);
+  m_actionShowFullUi->setCheckable(true);
+  m_actionShowFullUi->setMenuRole(QAction::NoRole);
+  m_actionConfigureServer->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
+  m_actionConfigureServer->setMenuRole(QAction::NoRole);
+  m_actionConfigureClient->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
+  m_actionConfigureClient->setMenuRole(QAction::NoRole);
+  m_actionOpenSyncthingUi->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
+  m_actionOpenSyncthingUi->setMenuRole(QAction::NoRole);
+
   // Setup the Instance Checking
   // In case of a previous crash remove first
   QLocalServer::removeServer(m_guiSocketName);
@@ -134,6 +154,7 @@ MainWindow::MainWindow()
 
   createMenuBar();
   setupControls();
+  setupOverview();
   updateText();
   connectSlots();
   setupTrayIcon();
@@ -161,6 +182,10 @@ MainWindow::MainWindow()
   applyConfig();
   m_statusBar->setSecurityIcon(TlsUtility::isEnabled());
   restoreWindow();
+
+  setSimpleView(Settings::value(Settings::Gui::SimpleView).toBool());
+  updateOverview();
+  m_syncManager->start();
 
 #ifdef Q_OS_MACOS
   // Route native quits (Cmd+Q / Apple menu Quit / Dock "Quit") to the usual close-to-tray decision instead.
@@ -332,6 +357,33 @@ void MainWindow::connectSlots()
   connect(ui->lineEditName, &QLineEdit::editingFinished, this, &MainWindow::setHostName);
 
   connect(m_networkMonitor, &NetworkMonitor::ipAddressesChanged, this, &MainWindow::updateIpLabel);
+
+  connect(m_actionPair, &QAction::triggered, this, &MainWindow::openPairingWizard);
+  connect(m_actionShowFullUi, &QAction::toggled, this, [this](bool checked) { setSimpleView(!checked); });
+  connect(m_actionConfigureServer, &QAction::triggered, this, [this] { showConfigureServer(""); });
+  connect(m_actionConfigureClient, &QAction::triggered, this, [this] { showConfigureClient(); });
+  connect(m_actionOpenSyncthingUi, &QAction::triggered, this, &MainWindow::openSyncthingUi);
+
+  connect(m_overviewPage, &OverviewPage::pairRequested, this, &MainWindow::openPairingWizard);
+  connect(m_overviewPage, &OverviewPage::startStopRequested, this, &MainWindow::toggleCoreFromOverview);
+  connect(m_overviewPage, &OverviewPage::mouseBroadcastToggled, this, &MainWindow::requestMouseBroadcast);
+  connect(m_overviewPage, &OverviewPage::keyboardBroadcastToggled, this, &MainWindow::requestKeyboardBroadcast);
+  connect(m_overviewPage, &OverviewPage::openFolderRequested, this, &MainWindow::openSyncFolder);
+  connect(m_overviewPage, &OverviewPage::openSyncthingUiRequested, this, &MainWindow::openSyncthingUi);
+  connect(m_overviewPage, &OverviewPage::showFullUiRequested, this, [this] { setSimpleView(false); });
+  connect(m_overviewPage, &OverviewPage::pauseSyncRequested, this, [this](bool paused) {
+    m_syncManager->setPaused(paused, [this](const sync::SyncthingClient::Reply &reply) {
+      if (!reply.ok) {
+        QMessageBox::warning(this, kAppName, tr("Could not change the file sync state: %1").arg(reply.error));
+      }
+    });
+  });
+
+  connect(m_syncManager, &sync::SyncManager::summaryChanged, this, &MainWindow::syncStateChanged);
+  connect(m_syncManager, &sync::SyncManager::processStateChanged, this, &MainWindow::syncStateChanged);
+  connect(m_syncManager, &sync::SyncManager::errorOccurred, this, [](const QString &message) {
+    qWarning("file sync: %s", qPrintable(message));
+  });
 }
 
 void MainWindow::toggleLogVisible(bool visible)
@@ -388,6 +440,7 @@ void MainWindow::settingsChanged(const QString &key)
     updateSecurityIcon(m_statusBar->securityIconVisible());
     return;
   }
+  updateOverview();
 }
 
 void MainWindow::serverConfigSaving()
@@ -459,6 +512,7 @@ void MainWindow::clearSettings()
 
   m_coreProcess.stop();
   m_coreProcess.clearSettings();
+  m_syncManager->stop();
 
   m_saveOnExit = false;
   diagnostic::clearSettings(true);
@@ -694,6 +748,14 @@ void MainWindow::createMenuBar()
 
   m_menuView->addAction(m_logDock->toggleViewAction());
 
+  m_menuAdvanced->addAction(m_actionPair);
+  m_menuAdvanced->addSeparator();
+  m_menuAdvanced->addAction(m_actionConfigureServer);
+  m_menuAdvanced->addAction(m_actionConfigureClient);
+  m_menuAdvanced->addAction(m_actionOpenSyncthingUi);
+  m_menuAdvanced->addSeparator();
+  m_menuAdvanced->addAction(m_actionShowFullUi);
+
   m_menuHelp->addAction(m_actionAbout);
   m_menuHelp->addAction(m_actionShowHelp);
 
@@ -701,6 +763,7 @@ void MainWindow::createMenuBar()
   menuBar->addMenu(m_menuFile);
   menuBar->addMenu(m_menuEdit);
   menuBar->addMenu(m_menuView);
+  menuBar->addMenu(m_menuAdvanced);
   menuBar->addMenu(m_menuHelp);
 
   setMenuBar(menuBar);
@@ -946,6 +1009,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
   // disconnect them before accepting the event
   disconnect(m_logDock->toggleViewAction(), &QAction::toggled, nullptr, nullptr);
 
+  m_syncManager->stop();
+
   event->accept();
   QApplication::quit();
 }
@@ -1050,6 +1115,7 @@ void MainWindow::coreConnectionStateChanged(ConnectionState state)
   } else if (isVisible()) {
     showFirstConnectedMessage();
   }
+  updateOverview();
 }
 
 void MainWindow::updateFingerprintButton()
@@ -1121,6 +1187,13 @@ void MainWindow::updateText()
 
   m_actionShowHelp->setText(tr("View &Help"));
 
+  m_menuAdvanced->setTitle(tr("&Advanced"));
+  m_actionPair->setText(tr("Pair a computer..."));
+  m_actionShowFullUi->setText(tr("Show full interface"));
+  m_actionConfigureServer->setText(tr("Configure server..."));
+  m_actionConfigureClient->setText(tr("Configure client..."));
+  m_actionOpenSyncthingUi->setText(tr("Advanced sync settings..."));
+
   //: start / restart core shortcut
   m_actionStartCore->setShortcut(QKeySequence(tr("Ctrl+S")));
   m_actionRestartCore->setShortcut(QKeySequence(tr("Ctrl+S")));
@@ -1169,6 +1242,7 @@ void MainWindow::updateScreenName()
   ui->lblComputerName->setText(screenName);
   ui->lineEditName->setText(screenName);
   m_serverConfig.updateServerName();
+  updateOverview();
 }
 
 void MainWindow::showAndActivate()
@@ -1271,6 +1345,7 @@ void MainWindow::serverClientsChanged(const QStringList &clients)
   }
 
   rebuildMouseBroadcastTargetMenu();
+  updateOverview();
 }
 
 QStringList MainWindow::mouseBroadcastTargets() const
@@ -1643,6 +1718,7 @@ void MainWindow::updateMouseBroadcastControls()
 
   m_actionStopInputBroadcast->setVisible(isServer && (m_mouseBroadcasting || m_keyboardBroadcasting));
   m_actionStopInputBroadcast->setEnabled(!m_mouseBroadcastRequestPending && !m_keyboardBroadcastRequestPending);
+  updateOverview();
 }
 
 void MainWindow::daemonIpcClientConnectionFailed()
@@ -1763,4 +1839,172 @@ bool MainWindow::canRunCore() const
   const bool isServer = mode == Settings::CoreMode::Server;
   const bool isClient = mode == Settings::CoreMode::Client;
   return ((isServer || isClient) && (isClient && !ui->lineHostname->text().isEmpty()) || isServer);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Simplified home page, pairing and file sync
+//////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::setupOverview()
+{
+  // Keep the original main widget untouched as the "full interface" and put the
+  // simplified page in front of it.
+  auto *original = takeCentralWidget();
+  m_overviewPage = new OverviewPage(this);
+  m_overviewPage->setBroadcastTargetsMenu(m_mouseBroadcastTargetsMenu);
+  m_centralStack = new QStackedWidget(this);
+  m_centralStack->addWidget(m_overviewPage);
+  m_centralStack->addWidget(original);
+  setCentralWidget(m_centralStack);
+}
+
+void MainWindow::setSimpleView(bool simple)
+{
+  if (!m_centralStack) {
+    return;
+  }
+  m_centralStack->setCurrentIndex(simple ? 0 : 1);
+  Settings::setValue(Settings::Gui::SimpleView, simple);
+  const QSignalBlocker blocker(m_actionShowFullUi);
+  m_actionShowFullUi->setChecked(!simple);
+  if (simple) {
+    updateOverview();
+  }
+}
+
+QString MainWindow::peerDisplayName() const
+{
+  if (const auto peer = Settings::value(Settings::Pairing::PeerName).toString(); !peer.isEmpty()) {
+    return peer;
+  }
+  if (m_coreProcess.mode() == CoreMode::Server) {
+    if (!m_connectedClients.isEmpty()) {
+      return m_connectedClients.first();
+    }
+    for (const auto &screen : m_serverConfig.screens()) {
+      if (!screen.isNull() && !screen.isServer()) {
+        return screen.name();
+      }
+    }
+    return {};
+  }
+  return Settings::value(Settings::Client::RemoteHost).toString();
+}
+
+QString MainWindow::inputStatusText() const
+{
+  using enum ProcessState;
+  const auto mode = m_coreProcess.mode();
+  const bool isServer = mode == CoreMode::Server;
+  const auto peer = peerDisplayName();
+  const auto other = peer.isEmpty() ? tr("the other computer") : peer;
+
+  if (mode == CoreMode::None) {
+    return tr("Not set up yet. Pair a computer to get started.");
+  }
+
+  switch (m_coreProcess.processState()) {
+  case Stopped:
+    return isServer ? tr("Keyboard and mouse sharing is stopped.") : tr("Not connected to %1.").arg(other);
+  case Starting:
+    return tr("Starting...");
+  case Stopping:
+    return tr("Stopping...");
+  case RetryPending:
+    return tr("Will retry in a moment...");
+  case Started:
+    break;
+  }
+
+  if (isServer) {
+    if (!m_connectedClients.isEmpty()) {
+      return tr("Sharing keyboard and mouse with %1.").arg(m_connectedClients.join(QStringLiteral(", ")));
+    }
+    return tr("Waiting for %1 to connect.").arg(other);
+  }
+
+  switch (m_coreProcess.connectionState()) {
+  case ConnectionState::Connected:
+    return tr("Connected to %1.").arg(other);
+  case ConnectionState::Connecting:
+    return tr("Connecting to %1...").arg(other);
+  default:
+    return tr("Disconnected from %1, retrying...").arg(other);
+  }
+}
+
+void MainWindow::updateOverview()
+{
+  if (!m_overviewPage) {
+    return;
+  }
+
+  const auto mode = m_coreProcess.mode();
+  const bool paired = Settings::value(Settings::Pairing::Completed).toBool();
+  m_overviewPage->setIdentity(
+      Settings::value(Settings::Core::ComputerName).toString(), peerDisplayName(), mode, paired
+  );
+
+  OverviewPage::InputStatus status;
+  status.isServer = mode == CoreMode::Server;
+  status.running = m_coreProcess.isStarted();
+  status.connected = (status.isServer && !m_connectedClients.isEmpty()) ||
+                     (!status.isServer && m_coreProcess.connectionState() == ConnectionState::Connected);
+  status.canStart = canRunCore();
+  status.statusText = inputStatusText();
+  status.mouseChecked = ui->checkMouseBroadcast->isChecked();
+  status.mouseEnabled = ui->checkMouseBroadcast->isEnabled();
+  status.mouseToolTip = ui->checkMouseBroadcast->toolTip();
+  status.keyboardChecked = ui->checkKeyboardBroadcast->isChecked();
+  status.keyboardEnabled = ui->checkKeyboardBroadcast->isEnabled();
+  status.keyboardToolTip = ui->checkKeyboardBroadcast->toolTip();
+  status.targetsEnabled = ui->btnMouseBroadcastTargets->isEnabled();
+  status.targetsText = ui->btnMouseBroadcastTargets->text();
+  m_overviewPage->setInputStatus(status);
+
+  m_overviewPage->setSyncFolder(m_syncManager->folderPath());
+  syncStateChanged();
+}
+
+void MainWindow::syncStateChanged()
+{
+  if (!m_overviewPage) {
+    return;
+  }
+  m_overviewPage->setSyncState(m_syncManager->summary(), m_syncManager->processState(), m_syncManager->isEnabled());
+}
+
+void MainWindow::toggleCoreFromOverview()
+{
+  if (m_coreProcess.isStarted()) {
+    m_actionStopCore->trigger();
+  } else {
+    m_actionStartCore->trigger();
+  }
+}
+
+void MainWindow::openSyncthingUi()
+{
+  if (!m_syncManager->isApiReachable()) {
+    QMessageBox::information(
+        this, kAppName, tr("File sync is not running right now, so its settings cannot be opened.")
+    );
+    return;
+  }
+  QDesktopServices::openUrl(m_syncManager->webUiUrl());
+}
+
+void MainWindow::openSyncFolder()
+{
+  const auto path = m_syncManager->folderPath();
+  if (path.isEmpty()) {
+    return;
+  }
+  QDir().mkpath(path);
+  QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+}
+
+void MainWindow::openPairingWizard()
+{
+  QMessageBox::information(this, kAppName, tr("Guided pairing is coming in the next step."));
 }

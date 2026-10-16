@@ -57,6 +57,13 @@ public:
   bool useExternalConfig() const;
   void addClient(const QString &clientName);
 
+  /**
+   * @brief Replace the layout with this computer and a single client next to it.
+   * @param clientName screen name of the other computer
+   * @param clientOnLeft true when the other computer sits to the left of this one
+   */
+  void setupTwoComputerLayout(const QString &clientName, bool clientOnLeft);
+
 private:
   void recall();
   void setupScreens();

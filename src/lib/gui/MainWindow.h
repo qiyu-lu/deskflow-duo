@@ -19,6 +19,7 @@
 #include "config/ServerConfig.h"
 #include "gui/core/CoreProcess.h"
 #include "gui/core/NetworkMonitor.h"
+#include "gui/sync/SyncManager.h"
 #include "net/Fingerprint.h"
 
 #ifdef Q_OS_MACOS
@@ -31,6 +32,8 @@ class QLocalServer;
 
 class DeskflowApplication;
 class LogDock;
+class OverviewPage;
+class QStackedWidget;
 class StatusBar;
 
 namespace Ui {
@@ -161,6 +164,18 @@ private:
 
   bool canRunCore() const;
 
+  // simplified home page, guided pairing and file sync
+  void setupOverview();
+  void updateOverview();
+  void setSimpleView(bool simple);
+  void openPairingWizard();
+  void openSyncthingUi();
+  void openSyncFolder();
+  void toggleCoreFromOverview();
+  void syncStateChanged();
+  QString peerDisplayName() const;
+  QString inputStatusText() const;
+
   /**
    * @brief trustedFingerprintDatabase get the FingerprintDatabase for the trusted clients or trusted servers.
    * @return The path to the trusted fingerprint file
@@ -216,6 +231,7 @@ private:
   QMenu *m_menuView = nullptr;
   QMenu *m_menuHelp = nullptr;
   QMenu *m_mouseBroadcastTargetsMenu = nullptr;
+  QMenu *m_menuAdvanced = nullptr;
 
   // Window Actions
   QAction *m_actionAbout = nullptr;
@@ -229,6 +245,11 @@ private:
   QAction *m_actionStopCore = nullptr;
   QAction *m_actionShowHelp = nullptr;
   QAction *m_actionStopInputBroadcast = nullptr;
+  QAction *m_actionPair = nullptr;
+  QAction *m_actionShowFullUi = nullptr;
+  QAction *m_actionConfigureServer = nullptr;
+  QAction *m_actionConfigureClient = nullptr;
+  QAction *m_actionOpenSyncthingUi = nullptr;
 
   // Network monitoring
   NetworkMonitor *m_networkMonitor = nullptr;
@@ -238,4 +259,9 @@ private:
   QStringList m_serverStartIPs;
   QString m_serverStartSuggestedIP;
   QUrl m_helpPath;
+
+  // simplified home page and the managed file sync
+  OverviewPage *m_overviewPage = nullptr;
+  QStackedWidget *m_centralStack = nullptr;
+  deskflow::gui::sync::SyncManager *m_syncManager = nullptr;
 };

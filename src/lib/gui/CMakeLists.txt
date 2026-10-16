@@ -106,6 +106,8 @@ add_library(${target} STATIC
   widgets/LogWidget.cpp
   widgets/NewScreenWidget.cpp
   widgets/NewScreenWidget.h
+  widgets/OverviewPage.cpp
+  widgets/OverviewPage.h
   widgets/ScreenSetupView.cpp
   widgets/ScreenSetupView.h
   widgets/SearchWidget.h
