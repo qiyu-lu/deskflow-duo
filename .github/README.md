@@ -1,39 +1,53 @@
 # Deskflow 双机套件
 
-这是一个基于 [Deskflow](https://github.com/deskflow/deskflow) 的个人功能分支，
-并非 Deskflow 官方发布版本。输入广播功能位于
-[`feature/mouse-broadcast`](https://github.com/qiyu-lu/deskflow/tree/feature/mouse-broadcast)，
-一键配对与文件同步位于
-[`feature/unified-setup`](https://github.com/qiyu-lu/deskflow/tree/feature/unified-setup)。
+一套键盘鼠标控制两台电脑，鼠标键盘动作可以同时发给两台，两台之间还自动同步一个文件夹。
+两台电脑上各点一次"配对新电脑"，核对一个六位数字，就全部配好了。
 
-## 主要改动
+这是一个基于 [Deskflow](https://github.com/deskflow/deskflow) 的个人功能分支，并非 Deskflow 官方发布版本。
+问题请在本仓库反馈，不要提交到上游项目。
 
-- 一次配对完成两台电脑的全部设置：键鼠共享布局、证书互信、同步目录。两边各显示一个六位数字核对即可。
-- 内置 Syncthing：安装包自带，由 Deskflow 启动和管理，使用独立的配置目录和端口，不影响已有的 Syncthing。
-- 简洁主页：只保留连接状态、输入广播开关、同步状态和同步目录；原来的完整界面在"高级 → 显示完整界面"。
-- 输入广播：服务端可以把鼠标移动、点击、滚轮和原始键盘按键广播到另一台电脑，鼠标与键盘可独立开关，支持快捷键。
-- 文件同步的高级设置直接打开 Syncthing 的网页界面，不重复造轮子。
+![两台电脑通过局域网连接，一次配对完成键鼠共享、输入广播和文件同步](../docs/images/overview.zh_CN.svg)
 
-使用说明请查看
-[两台电脑一键配对指南](../docs/QuickStart.zh_CN.md)，
-广播功能的细节见
-[键鼠广播使用指南](../docs/InputBroadcastGuide.zh_CN.md)。
+## 它能做什么
 
-## 下载
+- **键鼠共享**：Deskflow 原有功能，鼠标移到屏幕边缘就切到另一台电脑，剪贴板也共享。
+- **输入广播**：在主机上勾选"鼠标"或"键盘"，移动、点击、滚轮和按键会同时发给两台电脑，适合在两台机器上重复同样的操作。
+- **文件同步**：安装包自带 Syncthing，由本程序启动和管理。默认同步主目录下的 `DeskflowSync`，放进去的文件会出现在另一台电脑的同名目录。
+- **一次配对**：主机等待、副机输入主机地址、两边核对同一个六位数字，然后自动写好布局、互相信任证书、创建同步目录，不再有任何确认框。
 
-当前预览版：
-[Deskflow Input Broadcast Preview 0.2.0](https://github.com/qiyu-lu/deskflow/releases/tag/input-broadcast-v0.2.0)
+## 界面
 
-| 系统 | 下载 |
-| --- | --- |
-| Windows x64 | [`deskflow-input-broadcast-v0.2.0-windows-x64.zip`](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-windows-x64.zip) |
-| Ubuntu x64（DEB） | [`deskflow-input-broadcast-v0.2.0-ubuntu-x64.zip`](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-ubuntu-x64.zip) |
-| Ubuntu x64（Flatpak） | [`deskflow-input-broadcast-v0.2.0-flatpak-x64.zip`](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-flatpak-x64.zip) |
+主界面只保留每天会用到的东西：连接状态、启动或停止、广播开关、同步状态和同步目录。
+其余功能收在菜单"高级"里：Deskflow 原来的服务端布局和客户端选项、"文件同步高级设置"（在浏览器里打开 Syncthing 的网页界面），
+以及"显示完整界面"，随时可以切回原来的 Deskflow 界面。
 
-下载对应平台的 ZIP 并解压后再安装。请不要选择 Release 页面底部由 GitHub
-自动生成的 `Source code (zip)` 或 `Source code (tar.gz)`，它们只包含源代码，不是安装包。
+## 下载与安装
+
+两台电脑必须安装同一个版本。请下载对应平台的安装包，不要下载 Release 页面自动生成的 `Source code`。
+
+| 版本 | 内容 | 下载 |
+| --- | --- | --- |
+| `unified-setup-v0.3.0` | 一次配对 + 文件同步 + 输入广播（本分支） | 由 [GitHub Actions](https://github.com/qiyu-lu/deskflow/actions/workflows/package-test.yml) 构建，Release 发布后在此更新链接 |
+| [`input-broadcast-v0.2.0`](https://github.com/qiyu-lu/deskflow/releases/tag/input-broadcast-v0.2.0) | 仅输入广播 | [Windows](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-windows-x64.zip) · [Ubuntu DEB](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-ubuntu-x64.zip) · [Flatpak](https://github.com/qiyu-lu/deskflow/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-flatpak-x64.zip) |
+
+- Windows：解压后运行 `.msi`。
+- Ubuntu 24.04 及更新：`sudo apt install ./deskflow-*.deb`。
+- 其他 Linux 发行版（包括 Ubuntu 20.04 / 22.04）：用 Flatpak，`flatpak install --user ./deskflow-*.flatpak`。DEB 依赖较新的 Qt，老版本系统装不上，Flatpak 自带运行库，不受系统版本限制。
+
+安装和配对的详细步骤见[两台电脑一键配对指南](../docs/QuickStart.zh_CN.md)，广播功能的行为和限制见[键鼠广播使用指南](../docs/InputBroadcastGuide.zh_CN.md)。
+
+## 已知限制
+
+- Ubuntu 作为主机时需要 X11 会话（登录时选择 "Ubuntu on Xorg"），Wayland 暂不支持广播。
+- 目前重点验证的是 Ubuntu 主机加 Windows 副机；Windows 作为主机的广播尚未验证。
+- 键盘广播按物理按键工作，两边键盘布局需要一致，不保证不同输入法下的文本完全相同。
+
+## 分支说明
+
+- [`feature/unified-setup`](https://github.com/qiyu-lu/deskflow/tree/feature/unified-setup)：一次配对、内置 Syncthing、简洁主页，包含下面分支的全部内容。
+- [`feature/mouse-broadcast`](https://github.com/qiyu-lu/deskflow/tree/feature/mouse-broadcast)：仅输入广播。
 
 ## 上游项目与许可证
 
-- 官方项目：[deskflow/deskflow](https://github.com/deskflow/deskflow)
-- 本分支保留 Deskflow 的 [GPL-2.0 许可证及 OpenSSL 例外](../LICENSE)。
+- 官方项目：[deskflow/deskflow](https://github.com/deskflow/deskflow)，GPL-2.0 及 OpenSSL 例外，本分支保留同一[许可证](../LICENSE)。
+- 文件同步由 [Syncthing](https://github.com/syncthing/syncthing) 提供，MPL-2.0，安装包内为未经修改的官方发布版。

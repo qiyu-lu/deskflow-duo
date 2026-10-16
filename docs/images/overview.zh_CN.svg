@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="959" height="439" rx="16" fill="#f8fafc" stroke="#e2e8f0"/>
+
+  <!-- left laptop: the one with the keyboard and mouse -->
+  <g>
+    <rect x="90" y="100" width="200" height="130" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+    <rect x="100" y="110" width="180" height="110" rx="4" fill="#ffffff"/>
+    <path d="M70,240 L310,240 L300,258 L80,258 z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+    <!-- keyboard and mouse glyphs on the screen -->
+    <rect x="124" y="150" width="90" height="34" rx="4" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <g fill="#2563eb">
+      <rect x="131" y="157" width="8" height="6" rx="1"/><rect x="143" y="157" width="8" height="6" rx="1"/><rect x="155" y="157" width="8" height="6" rx="1"/><rect x="167" y="157" width="8" height="6" rx="1"/><rect x="179" y="157" width="8" height="6" rx="1"/><rect x="191" y="157" width="8" height="6" rx="1"/><rect x="203" y="157" width="4" height="6" rx="1"/>
+      <rect x="131" y="167" width="8" height="6" rx="1"/><rect x="143" y="167" width="8" height="6" rx="1"/><rect x="155" y="167" width="8" height="6" rx="1"/><rect x="167" y="167" width="8" height="6" rx="1"/><rect x="179" y="167" width="8" height="6" rx="1"/><rect x="191" y="167" width="16" height="6" rx="1"/>
+      <rect x="143" y="177" width="56" height="4" rx="1"/>
+    </g>
+    <rect x="228" y="148" width="26" height="40" rx="12" fill="none" stroke="#2563eb" stroke-width="2"/>
+    <line x1="241" y1="148" x2="241" y2="164" stroke="#2563eb" stroke-width="2"/>
+    <text x="190" y="290" text-anchor="middle" font-size="18" font-weight="600" fill="#0f172a">主机</text>
+    <text x="190" y="312" text-anchor="middle" font-size="14" fill="#475569">键盘和鼠标接在这台</text>
+  </g>
+
+  <!-- right laptop: controlled computer -->
+  <g>
+    <rect x="670" y="100" width="200" height="130" rx="8" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+    <rect x="680" y="110" width="180" height="110" rx="4" fill="#ffffff"/>
+    <path d="M650,240 L890,240 L880,258 L660,258 z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+    <!-- folder glyph on the screen -->
+    <path d="M722,150 h30 l10,10 h50 v40 h-90 z" fill="#d1fae5" stroke="#059669" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="722" y="166" width="90" height="34" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="770" y="290" text-anchor="middle" font-size="18" font-weight="600" fill="#0f172a">副机</text>
+    <text x="770" y="312" text-anchor="middle" font-size="14" fill="#475569">由主机控制</text>
+  </g>
+
+  <!-- the three things one pairing sets up -->
+  <g font-size="14">
+    <text x="480" y="118" text-anchor="middle" fill="#1d4ed8" font-weight="600">键鼠共享 <tspan fill="#64748b" font-weight="400">Deskflow</tspan></text>
+    <line x1="330" y1="130" x2="628" y2="130" stroke="#2563eb" stroke-width="3" marker-end="url(#blue)"/>
+
+    <text x="480" y="168" text-anchor="middle" fill="#b45309" font-weight="600">输入广播 <tspan fill="#64748b" font-weight="400">鼠标键盘同时发给两台</tspan></text>
+    <line x1="330" y1="180" x2="628" y2="180" stroke="#d97706" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#amber)"/>
+
+    <text x="480" y="218" text-anchor="middle" fill="#047857" font-weight="600">文件同步 <tspan fill="#64748b" font-weight="400">内置 Syncthing</tspan></text>
+    <line x1="332" y1="230" x2="628" y2="230" stroke="#059669" stroke-width="3" marker-start="url(#green)" marker-end="url(#green)"/>
+  </g>
+
+  <!-- the network between them -->
+  <g>
+    <line x1="190" y1="345" x2="770" y2="345" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6"/>
+    <circle cx="480" cy="345" r="26" fill="#f8fafc"/>
+    <path d="M460,342 a28,28 0 0 1 40,0" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M467,349 a18,18 0 0 1 26,0" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="480" cy="356" r="3" fill="#64748b"/>
+    <text x="480" y="385" text-anchor="middle" font-size="14" fill="#475569">同一个局域网：网线或 Wi‑Fi 都可以</text>
+  </g>
+
+  <text x="480" y="420" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">一次配对，自动完成布局、证书互信和同步目录</text>
+</svg>
