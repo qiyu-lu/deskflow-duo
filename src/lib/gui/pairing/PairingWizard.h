@@ -101,6 +101,7 @@ class RolePage : public QWizardPage
 
 public:
   explicit RolePage(PairingWizard *wizard);
+  void initializePage() override;
   int nextId() const override;
   bool validatePage() override;
 

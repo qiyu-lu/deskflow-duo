@@ -41,6 +41,8 @@ void PairingApplier::applyInputSharing()
     m_serverConfig.setupTwoComputerLayout(m_remote.computerName, m_local.clientOnLeft);
     m_serverConfig.commit();
     Settings::setValue(Settings::Server::ExternalConfig, false);
+    // the wizard already explained what happens next, skip the generic first-start hint
+    Settings::setValue(Settings::Gui::ShownServerFirstStartMessage, true);
   } else {
     Settings::setValue(Settings::Client::RemoteHost, m_remoteAddress);
   }

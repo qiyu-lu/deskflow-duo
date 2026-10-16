@@ -23,6 +23,17 @@ const int kMaxMessageSize = 64 * 1024;
 const auto kTypeHello = QStringLiteral("hello");
 const auto kTypeResult = QStringLiteral("result");
 const auto kTypeBye = QStringLiteral("bye");
+
+// "::ffff:192.168.1.5" is how a dual-stack listener reports an IPv4 peer, show it as IPv4
+QString plainAddress(const QHostAddress &address)
+{
+  if (address.isNull()) {
+    return {};
+  }
+  bool isV4 = false;
+  const auto v4 = address.toIPv4Address(&isV4);
+  return isV4 ? QHostAddress(v4).toString() : address.toString();
+}
 } // namespace
 
 QJsonObject PairingInfo::toJson() const
@@ -116,6 +127,8 @@ void PairingService::connectToServer(const QString &address, quint16 port)
   abort();
   auto *socket = new QTcpSocket(this);
   adoptSocket(socket);
+  // what the user typed is what the client will keep connecting to later on
+  m_remoteAddress = address.trimmed();
   setPhase(Phase::Connecting);
   m_timeout.start(kConnectTimeoutMs);
   connect(socket, &QTcpSocket::connected, this, [this] {
@@ -135,7 +148,7 @@ void PairingService::adoptSocket(QTcpSocket *socket)
   m_buffer.clear();
   m_helloSent = false;
   m_helloReceived = false;
-  m_remoteAddress = socket->peerAddress().toString();
+  m_remoteAddress = plainAddress(socket->peerAddress());
   connect(socket, &QTcpSocket::readyRead, this, &PairingService::readMessages);
   connect(socket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
     if (m_phase == Phase::Connecting || m_phase == Phase::Listening || m_phase == Phase::Exchanged) {

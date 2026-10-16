@@ -58,6 +58,9 @@ PairingWizard::PairingWizard(
   connect(&syncManager, &sync::SyncManager::summaryChanged, this, [this](const sync::SyncSummary &summary) {
     if (!summary.myId.isEmpty() && m_local.syncDeviceId.isEmpty()) {
       m_local.syncDeviceId = summary.myId;
+      if (auto *role = qobject_cast<RolePage *>(page(Page_Role)); role && currentId() == Page_Role) {
+        role->initializePage();
+      }
     }
   });
 }
@@ -132,6 +135,11 @@ void RolePage::updateSyncHint()
   } else {
     m_lblSyncHint->setText(tr("File sync is ready. The folder %1 will be shared.").arg(m_wizard->localInfo().syncFolderPath));
   }
+}
+
+void RolePage::initializePage()
+{
+  updateSyncHint();
 }
 
 int RolePage::nextId() const
@@ -306,6 +314,7 @@ int ConnectPage::nextId() const
 ConfirmPage::ConfirmPage(PairingWizard *wizard) : QWizardPage(wizard), m_wizard(wizard)
 {
   setTitle(tr("Confirm the pairing"));
+  setSubTitle(tr("Both computers show a six digit number."));
 
   auto *layout = new QVBoxLayout(this);
   layout->setSpacing(12);
@@ -406,6 +415,7 @@ int ConfirmPage::nextId() const
 ApplyPage::ApplyPage(PairingWizard *wizard) : QWizardPage(wizard), m_wizard(wizard)
 {
   setTitle(tr("Setting things up"));
+  setSubTitle(tr("Keyboard and mouse sharing, trust and file sync are configured on this computer."));
   setFinalPage(true);
 
   auto *layout = new QVBoxLayout(this);
