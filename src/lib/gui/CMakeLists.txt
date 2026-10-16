@@ -118,6 +118,12 @@ add_library(${target} STATIC
   widgets/TrashScreenWidget.h
   widgets/SettingsDialogButtonBox.cpp
   widgets/SettingsDialogButtonBox.h
+  pairing/PairingApplier.cpp
+  pairing/PairingApplier.h
+  pairing/PairingService.cpp
+  pairing/PairingService.h
+  pairing/PairingWizard.cpp
+  pairing/PairingWizard.h
   sync/SyncManager.cpp
   sync/SyncManager.h
   sync/SyncSummary.h

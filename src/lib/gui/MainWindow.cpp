@@ -30,6 +30,7 @@
 #include "gui/core/CoreProcess.h"
 #include "gui/ipc/DaemonIpcClient.h"
 #include "gui/widgets/LogDock.h"
+#include "gui/pairing/PairingWizard.h"
 #include "gui/widgets/OverviewPage.h"
 #include "net/FingerprintDatabase.h"
 #include "widgets/StatusBar.h"
@@ -2006,5 +2007,39 @@ void MainWindow::openSyncFolder()
 
 void MainWindow::openPairingWizard()
 {
-  QMessageBox::information(this, kAppName, tr("Guided pairing is coming in the next step."));
+  pairing::PairingInfo local;
+  local.computerName = Settings::value(Settings::Core::ComputerName).toString();
+  local.syncDeviceId = m_syncManager->myDeviceId();
+  local.syncFolderPath = m_syncManager->folderPath();
+  if (TlsUtility::isEnabled() && !m_fingerprint.data.isEmpty()) {
+    local.tlsFingerprint = QString::fromLatin1(m_fingerprint.data.toHex());
+  }
+
+  showAndActivate();
+  pairing::PairingWizard wizard(local, m_serverConfig, *m_syncManager, this);
+  if (wizard.exec() != QDialog::Accepted) {
+    return;
+  }
+
+  // the applier wrote the settings, bring the controls of the full interface in line
+  const auto &paired = wizard.localInfo();
+  if (!paired.isServer) {
+    ui->lineHostname->setText(wizard.remoteAddress());
+  }
+  if (ui->rbModeServer->isChecked() == paired.isServer && ui->rbModeClient->isChecked() == !paired.isServer) {
+    coreModeToggled(true);
+  } else {
+    ui->rbModeServer->setChecked(paired.isServer);
+    ui->rbModeClient->setChecked(!paired.isServer);
+  }
+  updateScreenName();
+  rebuildMouseBroadcastTargetMenu();
+  setSimpleView(true);
+  updateOverview();
+
+  if (m_coreProcess.isStarted()) {
+    m_coreProcess.restart();
+  } else {
+    startCore();
+  }
 }
