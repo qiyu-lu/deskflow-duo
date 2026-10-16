@@ -405,6 +405,10 @@ Do you want to connect to the server?
         <translation>現在のTLS鍵長が許容される長さより小さいため、新しい2048ビット長の鍵を生成します。</translation>
     </message>
     <message>
+        <source>Could not change the file sync state: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>invalid certificate, generating a new one</source>
         <translation>無効な証明書、新しい証明書を生成しています</translation>
     </message>
@@ -453,6 +457,30 @@ Do you want to connect to the server?
         <translation>ヘルプを表示(&amp;H)</translation>
     </message>
     <message>
+        <source>&amp;Advanced</source>
+        <translation type="unfinished">詳細(&amp;A)</translation>
+    </message>
+    <message>
+        <source>Pair a computer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show full interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure server...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure client...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced sync settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>No IP Detected</source>
         <translation>IPアドレスが見つかりません</translation>
     </message>
@@ -475,6 +503,58 @@ Do you want to connect to the server?
     <message>
         <source>one of the following IPs:&lt;br/&gt;%1</source>
         <translation>以下のIPアドレスのいずれか:&lt;br/&gt;%1</translation>
+    </message>
+    <message>
+        <source>the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not set up yet. Pair a computer to get started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse sharing is stopped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not connected to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stopping...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Will retry in a moment...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sharing keyboard and mouse with %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to connect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connected to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting to %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disconnected from %1, retrying...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync is not running right now, so its settings cannot be opened.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
@@ -780,6 +860,157 @@ Additionally, check you are able to %1 the server config file: %2</source>
         <source>Unnamed</source>
         <extracomment>Used as the hostname. Translation may not contain spaces</extracomment>
         <translation>Unnamed</translation>
+    </message>
+</context>
+<context>
+    <name>OverviewPage</name>
+    <message>
+        <source>keyboard and mouse are attached here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>controlled from the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 · %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No computer paired yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paired with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pair again...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pair a computer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished">停止</translation>
+    </message>
+    <message>
+        <source>Disconnect</source>
+        <translation type="unfinished">切断</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation type="unfinished">起動</translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">接続</translation>
+    </message>
+    <message>
+        <source>File sync is turned off in the preferences.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Syncthing program was not found, so files are not synced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syncthing could not be started. See the log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting file sync...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No computer is set up for file sync yet. Pairing takes care of it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to come online.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync is paused.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Checking the folder for changes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syncing with %1, %2% done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some files could not be synced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Everything is in sync with %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect two computers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>One pairing sets up keyboard and mouse sharing and a synced folder. Install %1 on both computers, then start the pairing on each of them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I already have a configuration, show the full interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to both:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shared folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced sync settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens the Syncthing web interface in your browser for everything beyond the basics.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show full interface</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1570,6 +1801,353 @@ Enabling this setting will disable the server config GUI.</source>
     </message>
     <message>
         <source>Input events from the server are being applied on this computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ApplyPage</name>
+    <message>
+        <source>Setting things up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse sharing, trust and file sync are configured on this computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>… %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ConfirmPage</name>
+    <message>
+        <source>Confirm the pairing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers show a six digit number.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are different</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Same number, pair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; wants to pair with this computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer shows a number too. Pair only if both numbers are the same.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compare this number with the one on the other computer, then confirm the pairing there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The pairing was declined on the other computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ConnectPage</name>
+    <message>
+        <source>Connect to the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the address shown on the computer with the keyboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>for example 192.168.1.20</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">接続</translation>
+    </message>
+    <message>
+        <source>Connected to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the address first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting to %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingApplier</name>
+    <message>
+        <source>Keyboard and mouse sharing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 is placed %2 of this computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This computer connects to %1 at %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trusting the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TLS is turned off, nothing to trust.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer did not send a certificate fingerprint. You will be asked to confirm it on the first connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No fingerprint received, it will be confirmed on first connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save the trusted certificate to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Certificate of %1 is trusted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync is turned off.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync was not ready on both computers, so it was skipped. Pair again later to set it up.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipped, file sync was not ready.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add %1 to file sync: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shared folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not create the shared folder: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pairing with %1 is complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pairing with %1 is complete with remarks:
+
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingService</name>
+    <message>
+        <source>Could not reach the other computer. Check the address and that %1 is open there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pairing timed out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not listen on port %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The connection to the other computer failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer closed the connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer sent an invalid pairing message.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer runs a different version of %1. Install the same version on both.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer did not send its name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers are set as the one with the keyboard. Choose &quot;controlled&quot; on the other computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers are set as controlled. Choose &quot;keyboard and mouse are here&quot; on the other computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers are called &quot;%1&quot;. Give one of them a different name first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers chose the same role. Change it on one of them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both computers have the same name. Give one of them a different name first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer cancelled the pairing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingWizard</name>
+    <message>
+        <source>Pair a computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::RolePage</name>
+    <message>
+        <source>Which computer is this?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pairing runs on both computers. Pick the role of this one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The keyboard and mouse are attached to this computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This computer is controlled from the other one</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The other computer is on my</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This computer is called &lt;b&gt;%1&lt;/b&gt;. The name can be changed in the full interface.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync is not ready yet. If it stays that way, pairing sets up keyboard and mouse sharing only and you can pair again later for the shared folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File sync is ready. The folder %1 will be shared.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::WaitPage</name>
+    <message>
+        <source>Waiting for the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On the other computer choose &quot;controlled from the other one&quot; and enter this address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No network address found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 is here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;span style=&quot;color:#c0392b;&quot;&gt;%1&lt;/span&gt;&lt;br/&gt;Go back and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Listening on port %1. Keep this window open until the other computer shows up...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncManager</name>
+    <message>
+        <source>Could not create the folder %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncthingClient</name>
+    <message>
+        <source>Syncthing is not running</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncthingProcess</name>
+    <message>
+        <source>The Syncthing program was not found. File sync is unavailable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not create the Syncthing data directory: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not create the Syncthing configuration.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syncthing keeps exiting unexpectedly and will not be restarted. See the log: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not start Syncthing: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

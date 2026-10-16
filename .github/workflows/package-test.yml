@@ -6,7 +6,7 @@ name: Package test builds
 on:
   workflow_dispatch:
   push:
-    branches: [feature/mouse-broadcast]
+    branches: [feature/mouse-broadcast, feature/unified-setup]
 
 permissions:
   contents: read
@@ -19,7 +19,7 @@ env:
   CMAKE_CONFIGURE: >-
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_INSTALLER=ON
     -DSKIP_BUILD_TESTS=ON -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
-  PACKAGE_LABEL: input-broadcast-v0.2.0
+  PACKAGE_LABEL: unified-setup-v0.3.0
   SYNCTHING_VERSION: v2.1.6
   SYNCTHING_SHA256_WINDOWS_AMD64: 589098269cabb9a5a1703a934305b4153609d7623e978e1c94f0f49d77ae5e9f
   SYNCTHING_SHA256_LINUX_AMD64: 524ef4e1df1850b719e2378c8369956f4e5f2ab9a46fdf7f45f2b925012147aa
@@ -74,7 +74,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v7
         with:
-          name: deskflow-input-broadcast-v0.2.0-windows-x64
+          name: deskflow-${{ env.PACKAGE_LABEL }}-windows-x64
           path: build/deskflow[-_]*.*
           if-no-files-found: error
 
@@ -128,7 +128,7 @@ jobs:
       - name: Upload package
         uses: actions/upload-artifact@v7
         with:
-          name: deskflow-input-broadcast-v0.2.0-ubuntu-x64
+          name: deskflow-${{ env.PACKAGE_LABEL }}-ubuntu-x64
           path: build/deskflow[-_]*.deb
           if-no-files-found: error
 
@@ -164,13 +164,13 @@ jobs:
         with:
           bundle: deskflow-${{ env.PACKAGE_LABEL }}-linux-x86_64.flatpak
           manifest-path: deploy/linux/flatpak/org.deskflow.deskflow.yml
-          cache-key: input-broadcast-flatpak-x86_64
+          cache-key: unified-setup-flatpak-x86_64
           arch: x86_64
           upload-artifact: false
 
       - name: Upload package
         uses: actions/upload-artifact@v7
         with:
-          name: deskflow-input-broadcast-v0.2.0-flatpak-x64
+          name: deskflow-${{ env.PACKAGE_LABEL }}-flatpak-x64
           path: deskflow[-_]*.flatpak
           if-no-files-found: error

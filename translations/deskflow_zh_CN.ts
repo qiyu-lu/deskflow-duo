@@ -405,6 +405,10 @@ Do you want to connect to the server?
         <translation>您当前的 TLS 密钥长度小于允许的最小值，将生成一个新的 2048 位密钥。</translation>
     </message>
     <message>
+        <source>Could not change the file sync state: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>invalid certificate, generating a new one</source>
         <translation type="unfinished">证书无效，正在生成新证书</translation>
     </message>
@@ -453,6 +457,30 @@ Do you want to connect to the server?
         <translation type="unfinished">查看帮助(&amp;H)</translation>
     </message>
     <message>
+        <source>&amp;Advanced</source>
+        <translation type="unfinished">高级(&amp;A)</translation>
+    </message>
+    <message>
+        <source>Pair a computer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show full interface</source>
+        <translation>显示完整界面</translation>
+    </message>
+    <message>
+        <source>Configure server...</source>
+        <translation>服务端配置...</translation>
+    </message>
+    <message>
+        <source>Configure client...</source>
+        <translation>客户端配置...</translation>
+    </message>
+    <message>
+        <source>Advanced sync settings...</source>
+        <translation>文件同步高级设置...</translation>
+    </message>
+    <message>
         <source>No IP Detected</source>
         <translation>未检测到 IP</translation>
     </message>
@@ -475,6 +503,58 @@ Do you want to connect to the server?
     <message>
         <source>one of the following IPs:&lt;br/&gt;%1</source>
         <translation>以下 IP 地址之一：&lt;br/&gt;%1</translation>
+    </message>
+    <message>
+        <source>the other computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not set up yet. Pair a computer to get started.</source>
+        <translation>尚未设置。先配对一台电脑。</translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse sharing is stopped.</source>
+        <translation>键鼠共享已停止。</translation>
+    </message>
+    <message>
+        <source>Not connected to %1.</source>
+        <translation>未连接到 %1。</translation>
+    </message>
+    <message>
+        <source>Starting...</source>
+        <translation>正在启动...</translation>
+    </message>
+    <message>
+        <source>Stopping...</source>
+        <translation>正在停止...</translation>
+    </message>
+    <message>
+        <source>Will retry in a moment...</source>
+        <translation>稍后重试...</translation>
+    </message>
+    <message>
+        <source>Sharing keyboard and mouse with %1.</source>
+        <translation>正在与 %1 共享键盘和鼠标。</translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to connect.</source>
+        <translation>等待 %1 连接。</translation>
+    </message>
+    <message>
+        <source>Connected to %1.</source>
+        <translation>已连接到 %1。</translation>
+    </message>
+    <message>
+        <source>Connecting to %1...</source>
+        <translation>正在连接 %1...</translation>
+    </message>
+    <message>
+        <source>Disconnected from %1, retrying...</source>
+        <translation>与 %1 断开，正在重试...</translation>
+    </message>
+    <message>
+        <source>File sync is not running right now, so its settings cannot be opened.</source>
+        <translation>文件同步当前未运行，无法打开其设置。</translation>
     </message>
     <message>
         <source>
@@ -788,6 +868,157 @@ Additionally, check you are able to %1 the server config file: %2</source>
         <source>Unnamed</source>
         <extracomment>Used as the hostname. Translation may not contain spaces</extracomment>
         <translation>未命名</translation>
+    </message>
+</context>
+<context>
+    <name>OverviewPage</name>
+    <message>
+        <source>keyboard and mouse are attached here</source>
+        <translation>键盘鼠标接在这台</translation>
+    </message>
+    <message>
+        <source>controlled from the other computer</source>
+        <translation>由另一台电脑控制</translation>
+    </message>
+    <message>
+        <source>%1 · %2</source>
+        <translation>%1 · %2</translation>
+    </message>
+    <message>
+        <source>No computer paired yet</source>
+        <translation>还没有配对的电脑</translation>
+    </message>
+    <message>
+        <source>Paired with %1</source>
+        <translation>已与 %1 配对</translation>
+    </message>
+    <message>
+        <source>Pair again...</source>
+        <translation>重新配对...</translation>
+    </message>
+    <message>
+        <source>Pair a computer...</source>
+        <translation>配对新电脑...</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Disconnect</source>
+        <translation>断开</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>启动</translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <source>File sync is turned off in the preferences.</source>
+        <translation>文件同步已在首选项中关闭。</translation>
+    </message>
+    <message>
+        <source>The Syncthing program was not found, so files are not synced.</source>
+        <translation>找不到 Syncthing 程序，文件不会同步。</translation>
+    </message>
+    <message>
+        <source>Syncthing could not be started. See the log for details.</source>
+        <translation>Syncthing 无法启动，详情见日志。</translation>
+    </message>
+    <message>
+        <source>Starting file sync...</source>
+        <translation>正在启动文件同步...</translation>
+    </message>
+    <message>
+        <source>No computer is set up for file sync yet. Pairing takes care of it.</source>
+        <translation>还没有设置同步的电脑，配对时会自动完成。</translation>
+    </message>
+    <message>
+        <source>Waiting for %1 to come online.</source>
+        <translation>等待 %1 上线。</translation>
+    </message>
+    <message>
+        <source>File sync is paused.</source>
+        <translation>文件同步已暂停。</translation>
+    </message>
+    <message>
+        <source>Checking the folder for changes...</source>
+        <translation>正在检查文件夹变化...</translation>
+    </message>
+    <message>
+        <source>Syncing with %1, %2% done.</source>
+        <translation>正在与 %1 同步，已完成 %2%。</translation>
+    </message>
+    <message>
+        <source>Some files could not be synced.</source>
+        <translation>部分文件无法同步。</translation>
+    </message>
+    <message>
+        <source>Everything is in sync with %1.</source>
+        <translation>与 %1 的文件已全部同步。</translation>
+    </message>
+    <message>
+        <source>Resume</source>
+        <translation>继续</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>暂停</translation>
+    </message>
+    <message>
+        <source>Connect two computers</source>
+        <translation>把两台电脑连起来</translation>
+    </message>
+    <message>
+        <source>One pairing sets up keyboard and mouse sharing and a synced folder. Install %1 on both computers, then start the pairing on each of them.</source>
+        <translation>一次配对同时完成键鼠共享和文件夹同步。请在两台电脑上都安装 %1，然后分别开始配对。</translation>
+    </message>
+    <message>
+        <source>I already have a configuration, show the full interface</source>
+        <translation>我已经有配置，打开完整界面</translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse</source>
+        <translation>键盘与鼠标</translation>
+    </message>
+    <message>
+        <source>Send to both:</source>
+        <translation>同时发送到两边：</translation>
+    </message>
+    <message>
+        <source>Mouse</source>
+        <translation>鼠标</translation>
+    </message>
+    <message>
+        <source>Keyboard</source>
+        <translation>键盘</translation>
+    </message>
+    <message>
+        <source>File sync</source>
+        <translation>文件同步</translation>
+    </message>
+    <message>
+        <source>Shared folder:</source>
+        <translation>同步目录：</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <source>Advanced sync settings...</source>
+        <translation>文件同步高级设置...</translation>
+    </message>
+    <message>
+        <source>Opens the Syncthing web interface in your browser for everything beyond the basics.</source>
+        <translation>在浏览器中打开 Syncthing 网页界面，处理基础功能之外的设置。</translation>
+    </message>
+    <message>
+        <source>Show full interface</source>
+        <translation>显示完整界面</translation>
     </message>
 </context>
 <context>
@@ -1579,6 +1810,355 @@ Enabling this setting will disable the server config GUI.</source>
     <message>
         <source>Input events from the server are being applied on this computer.</source>
         <translation>正在此计算机上应用来自服务端的输入事件。</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ApplyPage</name>
+    <message>
+        <source>Setting things up</source>
+        <translation>正在设置</translation>
+    </message>
+    <message>
+        <source>Keyboard and mouse sharing, trust and file sync are configured on this computer.</source>
+        <translation>正在这台电脑上配置键鼠共享、证书信任和文件同步。</translation>
+    </message>
+    <message>
+        <source>… %1</source>
+        <translation>… %1</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ConfirmPage</name>
+    <message>
+        <source>Confirm the pairing</source>
+        <translation>确认配对</translation>
+    </message>
+    <message>
+        <source>Both computers show a six digit number.</source>
+        <translation>两台电脑都会显示一个六位数字。</translation>
+    </message>
+    <message>
+        <source>These are different</source>
+        <translation>数字不一样</translation>
+    </message>
+    <message>
+        <source>Same number, pair</source>
+        <translation>数字相同，配对</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; wants to pair with this computer.</source>
+        <translation>&lt;b&gt;%1&lt;/b&gt; 请求与这台电脑配对。</translation>
+    </message>
+    <message>
+        <source>The other computer shows a number too. Pair only if both numbers are the same.</source>
+        <translation>另一台电脑上也会显示一个数字。只有两边数字相同时才配对。</translation>
+    </message>
+    <message>
+        <source>Compare this number with the one on the other computer, then confirm the pairing there.</source>
+        <translation>请核对另一台电脑上显示的数字，然后在那台电脑上确认配对。</translation>
+    </message>
+    <message>
+        <source>The pairing was declined on the other computer.</source>
+        <translation>另一台电脑拒绝了配对。</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::ConnectPage</name>
+    <message>
+        <source>Connect to the other computer</source>
+        <translation>连接另一台电脑</translation>
+    </message>
+    <message>
+        <source>Enter the address shown on the computer with the keyboard.</source>
+        <translation>输入连着键盘的那台电脑上显示的地址。</translation>
+    </message>
+    <message>
+        <source>for example 192.168.1.20</source>
+        <translation>例如 192.168.1.20</translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <source>Connected to %1.</source>
+        <translation>已连接到 %1。</translation>
+    </message>
+    <message>
+        <source>Enter the address first.</source>
+        <translation>请先输入地址。</translation>
+    </message>
+    <message>
+        <source>Connecting to %1...</source>
+        <translation>正在连接 %1...</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingApplier</name>
+    <message>
+        <source>Keyboard and mouse sharing</source>
+        <translation>键鼠共享</translation>
+    </message>
+    <message>
+        <source>%1 is placed %2 of this computer.</source>
+        <translation>%1 放在这台电脑的%2。</translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation>左边</translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation>右边</translation>
+    </message>
+    <message>
+        <source>This computer connects to %1 at %2.</source>
+        <translation>这台电脑将连接到 %1（%2）。</translation>
+    </message>
+    <message>
+        <source>Trusting the other computer</source>
+        <translation>信任另一台电脑</translation>
+    </message>
+    <message>
+        <source>TLS is turned off, nothing to trust.</source>
+        <translation>TLS 已关闭，无需信任证书。</translation>
+    </message>
+    <message>
+        <source>The other computer did not send a certificate fingerprint. You will be asked to confirm it on the first connection.</source>
+        <translation>另一台电脑没有发送证书指纹，首次连接时会要求你确认。</translation>
+    </message>
+    <message>
+        <source>No fingerprint received, it will be confirmed on first connection.</source>
+        <translation>未收到指纹，首次连接时确认。</translation>
+    </message>
+    <message>
+        <source>Could not save the trusted certificate to %1.</source>
+        <translation>无法把受信任的证书保存到 %1。</translation>
+    </message>
+    <message>
+        <source>Could not write %1</source>
+        <translation>无法写入 %1</translation>
+    </message>
+    <message>
+        <source>Certificate of %1 is trusted.</source>
+        <translation>已信任 %1 的证书。</translation>
+    </message>
+    <message>
+        <source>File sync device</source>
+        <translation>文件同步设备</translation>
+    </message>
+    <message>
+        <source>File sync is turned off.</source>
+        <translation>文件同步已关闭。</translation>
+    </message>
+    <message>
+        <source>File sync was not ready on both computers, so it was skipped. Pair again later to set it up.</source>
+        <translation>两台电脑的文件同步尚未就绪，已跳过。稍后重新配对即可设置。</translation>
+    </message>
+    <message>
+        <source>Skipped, file sync was not ready.</source>
+        <translation>已跳过，文件同步尚未就绪。</translation>
+    </message>
+    <message>
+        <source>Could not add %1 to file sync: %2</source>
+        <translation>无法把 %1 加入文件同步：%2</translation>
+    </message>
+    <message>
+        <source>%1 added.</source>
+        <translation>已添加 %1。</translation>
+    </message>
+    <message>
+        <source>Shared folder</source>
+        <translation>同步目录</translation>
+    </message>
+    <message>
+        <source>Could not create the shared folder: %1</source>
+        <translation>无法创建同步目录：%1</translation>
+    </message>
+    <message>
+        <source>Pairing with %1 is complete.</source>
+        <translation>与 %1 的配对已完成。</translation>
+    </message>
+    <message>
+        <source>Pairing with %1 is complete with remarks:
+
+%2</source>
+        <translation>与 %1 的配对已完成，但有以下提示：
+
+%2</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingService</name>
+    <message>
+        <source>Could not reach the other computer. Check the address and that %1 is open there.</source>
+        <translation>无法连接到另一台电脑。请检查地址，并确认那台电脑上已打开 %1。</translation>
+    </message>
+    <message>
+        <source>Pairing timed out.</source>
+        <translation>配对超时。</translation>
+    </message>
+    <message>
+        <source>Could not listen on port %1: %2</source>
+        <translation>无法监听端口 %1：%2</translation>
+    </message>
+    <message>
+        <source>The connection to the other computer failed: %1</source>
+        <translation>与另一台电脑的连接失败：%1</translation>
+    </message>
+    <message>
+        <source>The other computer closed the connection.</source>
+        <translation>另一台电脑关闭了连接。</translation>
+    </message>
+    <message>
+        <source>The other computer sent an invalid pairing message.</source>
+        <translation>另一台电脑发来的配对消息无效。</translation>
+    </message>
+    <message>
+        <source>The other computer runs a different version of %1. Install the same version on both.</source>
+        <translation>另一台电脑运行的是不同版本的 %1，请两边安装同一版本。</translation>
+    </message>
+    <message>
+        <source>The other computer did not send its name.</source>
+        <translation>另一台电脑没有发送它的名字。</translation>
+    </message>
+    <message>
+        <source>Both computers are set as the one with the keyboard. Choose &quot;controlled&quot; on the other computer.</source>
+        <translation>两台电脑都选了&quot;键盘鼠标接在这台&quot;，请在另一台电脑上改选&quot;由另一台电脑控制&quot;。</translation>
+    </message>
+    <message>
+        <source>Both computers are set as controlled. Choose &quot;keyboard and mouse are here&quot; on the other computer.</source>
+        <translation>两台电脑都选了&quot;由另一台电脑控制&quot;，请在另一台电脑上改选&quot;键盘鼠标接在这台&quot;。</translation>
+    </message>
+    <message>
+        <source>Both computers are called &quot;%1&quot;. Give one of them a different name first.</source>
+        <translation>两台电脑的名字都是&quot;%1&quot;，请先给其中一台改名。</translation>
+    </message>
+    <message>
+        <source>Both computers chose the same role. Change it on one of them.</source>
+        <translation>两台电脑选择了相同的角色，请在其中一台上更改。</translation>
+    </message>
+    <message>
+        <source>Both computers have the same name. Give one of them a different name first.</source>
+        <translation>两台电脑的名字相同，请先给其中一台改名。</translation>
+    </message>
+    <message>
+        <source>The other computer cancelled the pairing.</source>
+        <translation>另一台电脑取消了配对。</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::PairingWizard</name>
+    <message>
+        <source>Pair a computer</source>
+        <translation>配对新电脑</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::RolePage</name>
+    <message>
+        <source>Which computer is this?</source>
+        <translation>这是哪一台电脑？</translation>
+    </message>
+    <message>
+        <source>Pairing runs on both computers. Pick the role of this one.</source>
+        <translation>配对需要在两台电脑上分别进行，请选择这台电脑的角色。</translation>
+    </message>
+    <message>
+        <source>The keyboard and mouse are attached to this computer</source>
+        <translation>键盘和鼠标接在这台电脑上（主机）</translation>
+    </message>
+    <message>
+        <source>This computer is controlled from the other one</source>
+        <translation>这台电脑由另一台电脑控制（副机）</translation>
+    </message>
+    <message>
+        <source>The other computer is on my</source>
+        <translation>另一台电脑在我的</translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation>右边</translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation>左边</translation>
+    </message>
+    <message>
+        <source>This computer is called &lt;b&gt;%1&lt;/b&gt;. The name can be changed in the full interface.</source>
+        <translation>这台电脑的名字是 &lt;b&gt;%1&lt;/b&gt;，可在完整界面中修改。</translation>
+    </message>
+    <message>
+        <source>File sync is not ready yet. If it stays that way, pairing sets up keyboard and mouse sharing only and you can pair again later for the shared folder.</source>
+        <translation>文件同步尚未就绪。如果一直如此，本次配对只设置键鼠共享，之后可以重新配对来设置同步目录。</translation>
+    </message>
+    <message>
+        <source>File sync is ready. The folder %1 will be shared.</source>
+        <translation>文件同步已就绪，将共享目录 %1。</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::pairing::WaitPage</name>
+    <message>
+        <source>Waiting for the other computer</source>
+        <translation>等待另一台电脑</translation>
+    </message>
+    <message>
+        <source>On the other computer choose &quot;controlled from the other one&quot; and enter this address.</source>
+        <translation>在另一台电脑上选择&quot;由另一台电脑控制&quot;，然后输入下面这个地址。</translation>
+    </message>
+    <message>
+        <source>No network address found</source>
+        <translation>未找到网络地址</translation>
+    </message>
+    <message>
+        <source>%1 is here.</source>
+        <translation>%1 已连上。</translation>
+    </message>
+    <message>
+        <source>&lt;span style=&quot;color:#c0392b;&quot;&gt;%1&lt;/span&gt;&lt;br/&gt;Go back and try again.</source>
+        <translation>&lt;span style=&quot;color:#c0392b;&quot;&gt;%1&lt;/span&gt;&lt;br/&gt;请返回重试。</translation>
+    </message>
+    <message>
+        <source>Listening on port %1. Keep this window open until the other computer shows up...</source>
+        <translation>正在端口 %1 上等待。请保持此窗口打开，直到另一台电脑连上来...</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncManager</name>
+    <message>
+        <source>Could not create the folder %1</source>
+        <translation>无法创建文件夹 %1</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncthingClient</name>
+    <message>
+        <source>Syncthing is not running</source>
+        <translation>Syncthing 未运行</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::sync::SyncthingProcess</name>
+    <message>
+        <source>The Syncthing program was not found. File sync is unavailable.</source>
+        <translation>找不到 Syncthing 程序，文件同步不可用。</translation>
+    </message>
+    <message>
+        <source>Could not create the Syncthing data directory: %1</source>
+        <translation>无法创建 Syncthing 数据目录：%1</translation>
+    </message>
+    <message>
+        <source>Could not create the Syncthing configuration.</source>
+        <translation>无法创建 Syncthing 配置。</translation>
+    </message>
+    <message>
+        <source>Syncthing keeps exiting unexpectedly and will not be restarted. See the log: %1</source>
+        <translation>Syncthing 反复意外退出，不再重启。请查看日志：%1</translation>
+    </message>
+    <message>
+        <source>Could not start Syncthing: %1</source>
+        <translation>无法启动 Syncthing：%1</translation>
     </message>
 </context>
 <context>

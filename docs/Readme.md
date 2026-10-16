@@ -4,14 +4,15 @@ Deskflow is a free and open source keyboard and mouse sharing app. Use the keybo
 
 [Homepage](https://deskflow.org) [Code](https://github.com/deskflow/deskflow)
 
-## Input broadcast extension
+## Two-computer kit extension
 
-This fork adds server-side mouse and raw-key broadcasting to selected connected clients.
-Mouse and keyboard broadcasting can be controlled independently from the GUI or hotkeys.
+This fork turns Deskflow into a one-pairing setup for two computers: keyboard and mouse
+sharing, mouse and raw-key broadcasting to the other computer, and a synced folder driven
+by a bundled Syncthing instance. A simplified home page sits in front of the full interface.
 
 - [Fork overview](../.github/README.md)
-- [Chinese user guide](InputBroadcastGuide.zh_CN.md)
-- [Preview release](https://github.com/qiyu-lu/deskflow/releases/tag/input-broadcast-v0.2.0)
+- [Quick start (Chinese)](QuickStart.zh_CN.md)
+- [Input broadcast guide (Chinese)](InputBroadcastGuide.zh_CN.md)
 
 ## Getting help online
 
