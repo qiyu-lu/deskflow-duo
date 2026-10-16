@@ -26,6 +26,14 @@ const auto kCoreIpcName = "@CMAKE_PROJECT_NAME@-core";
 const auto kServerGridHeight = 3;
 const auto kServerGridWidth = 5;
 
+// File sync (bundled Syncthing) and guided pairing
+const auto kSyncBinName = "syncthing";
+const auto kSyncFolderName = "@CMAKE_PROJECT_PROPER_NAME@Sync";
+const auto kSyncFolderId = "@CMAKE_PROJECT_NAME@-sync";
+const auto kSyncFolderLabel = "@CMAKE_PROJECT_PROPER_NAME@ Sync";
+const auto kPairingPort = 24802;
+const auto kPairingProtocolVersion = 1;
+
 #ifdef _WIN32
 
 // clang-format off

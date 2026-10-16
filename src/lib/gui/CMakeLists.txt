@@ -116,6 +116,15 @@ add_library(${target} STATIC
   widgets/TrashScreenWidget.h
   widgets/SettingsDialogButtonBox.cpp
   widgets/SettingsDialogButtonBox.h
+  sync/SyncManager.cpp
+  sync/SyncManager.h
+  sync/SyncSummary.h
+  sync/SyncthingClient.cpp
+  sync/SyncthingClient.h
+  sync/SyncthingMonitor.cpp
+  sync/SyncthingMonitor.h
+  sync/SyncthingProcess.cpp
+  sync/SyncthingProcess.h
 )
 
 target_link_libraries(${target}
@@ -124,4 +133,5 @@ target_link_libraries(${target}
     platform
     net
     Qt6::Widgets
+    Qt6::Network
 )

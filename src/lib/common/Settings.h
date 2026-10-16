@@ -88,6 +88,7 @@ public:
     inline static const auto ShowVersionInTitle = QStringLiteral("gui/showVersionInTitle");
     inline static const auto IgnoreMissingKeyboardLayouts = QStringLiteral("gui/ignoreMissingKeyboardLayouts");
     inline static const auto MouseBroadcastTargets = QStringLiteral("gui/mouseBroadcastTargets");
+    inline static const auto SimpleView = QStringLiteral("gui/simpleView");
   };
   struct Log
   {
@@ -128,6 +129,26 @@ public:
   struct Screen
   {
     inline static const auto Aliases = QStringLiteral("screen_%1/aliases");
+  };
+
+  // File synchronisation (bundled Syncthing instance managed by the GUI)
+  struct Sync
+  {
+    inline static const auto Enabled = QStringLiteral("sync/enabled");
+    inline static const auto BinaryPath = QStringLiteral("sync/binaryPath");
+    inline static const auto FolderPath = QStringLiteral("sync/folderPath");
+    inline static const auto FolderId = QStringLiteral("sync/folderId");
+  };
+
+  // Result of the guided pairing between two computers
+  struct Pairing
+  {
+    inline static const auto Completed = QStringLiteral("pairing/completed");
+    inline static const auto PeerName = QStringLiteral("pairing/peerName");
+    inline static const auto PeerAddress = QStringLiteral("pairing/peerAddress");
+    inline static const auto PeerSyncDeviceId = QStringLiteral("pairing/peerSyncDeviceId");
+    inline static const auto PeerSide = QStringLiteral("pairing/peerSide");
+    inline static const auto Port = QStringLiteral("pairing/port");
   };
 
   // Track Removed keys to make upgrading config easier
@@ -252,6 +273,8 @@ private:
     , QStringLiteral("security")
     , QStringLiteral("server")
     , QStringLiteral("internalConfig")
+    , QStringLiteral("sync")
+    , QStringLiteral("pairing")
   };
 
   inline static const QStringList m_validKeys = {
@@ -298,6 +321,7 @@ private:
     , Gui::ShowVersionInTitle
     , Gui::IgnoreMissingKeyboardLayouts
     , Gui::MouseBroadcastTargets
+    , Gui::SimpleView
     , Security::Certificate
     , Security::CheckPeers
     , Security::KeySize
@@ -319,6 +343,20 @@ private:
     , Server::SwitchDelay
     , Server::SwitchDoubleTap
     , Server::Win32KeepForeground
+  };
+
+  // Keys of the file sync and pairing groups
+  inline static const QStringList m_syncKeys = {
+      Sync::Enabled
+    , Sync::BinaryPath
+    , Sync::FolderPath
+    , Sync::FolderId
+    , Pairing::Completed
+    , Pairing::PeerName
+    , Pairing::PeerAddress
+    , Pairing::PeerSyncDeviceId
+    , Pairing::PeerSide
+    , Pairing::Port
   };
 
   // When checking the default values this list contains the ones that default to false.
@@ -345,6 +383,10 @@ private:
     , Server::ExternalConfig
     , Server::RelativeMouseMoves
   };
+  // (continued) keys that default to false
+  inline static const QStringList m_defaultFalseSyncValues = {
+      Pairing::Completed
+  };
 
   // When checking the default values this list contains the ones that default to true.
   inline static const QStringList m_defaultTrueValues = {
@@ -361,6 +403,13 @@ private:
   };
 
   // Settings saved in our State file
+  // (continued) keys that default to true
+  inline static const QStringList m_defaultTrueSyncValues = {
+      Sync::Enabled
+    , Gui::SimpleView
+  };
+
+
   inline static const QStringList m_stateKeys = {
       Gui::WindowGeometry
     , Client::XdpRestoreToken

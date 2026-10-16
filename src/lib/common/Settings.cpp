@@ -128,7 +128,8 @@ void Settings::cleanSettings()
       m_settings->remove(key);
     if (key.startsWith(QStringLiteral("internalConfig")))
       continue;
-    if (const auto group = key.mid(0, key.indexOf('/')); !m_validKeys.contains(key) && m_validGroup.contains(group))
+    if (const auto group = key.mid(0, key.indexOf('/'));
+        !m_validKeys.contains(key) && !m_syncKeys.contains(key) && m_validGroup.contains(group))
       m_settings->remove(key);
     if (!m_settings->value(key).canConvert<QStringList>() && m_settings->value(key).toString().isEmpty())
       m_settings->remove(key);
@@ -189,11 +190,20 @@ void Settings::checkIfSettingsWritableChange()
 
 QVariant Settings::defaultValue(const QString &key)
 {
-  if (m_defaultFalseValues.contains(key))
+  if (m_defaultFalseValues.contains(key) || m_defaultFalseSyncValues.contains(key))
     return false;
 
-  if (m_defaultTrueValues.contains(key))
+  if (m_defaultTrueValues.contains(key) || m_defaultTrueSyncValues.contains(key))
     return true;
+
+  if (key == Sync::FolderPath)
+    return QStringLiteral("%1/%2").arg(QDir::homePath(), kSyncFolderName);
+
+  if (key == Sync::FolderId)
+    return kSyncFolderId;
+
+  if (key == Pairing::Port)
+    return kPairingPort;
 
   if (key == Security::Certificate)
     return QStringLiteral("%1/%2.pem").arg(Settings::tlsDir(), kAppId);
@@ -368,6 +378,9 @@ QVariant Settings::value(const QString &key)
 void Settings::restoreDefaultSettings()
 {
   for (const auto &key : m_validKeys) {
+    instance()->setValue(key, defaultValue(key));
+  }
+  for (const auto &key : m_syncKeys) {
     instance()->setValue(key, defaultValue(key));
   }
 }
