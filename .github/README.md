@@ -13,6 +13,8 @@
 - **键鼠共享**：Deskflow 原有功能，鼠标移到屏幕边缘就切到另一台电脑，剪贴板也共享。
 - **输入广播**：在主机上勾选"鼠标"或"键盘"，移动、点击、滚轮和按键会同时发给两台电脑，适合在两台机器上重复同样的操作。
 - **文件同步**：安装包自带 Syncthing，由本程序启动和管理。默认同步主目录下的 `DeskflowSync`，放进去的文件会出现在另一台电脑的同名目录。
+- **截图同步**：给一个快捷键绑定"截图并保存到同步文件夹"动作，按下即可静默截取主机屏幕并存进同步文件夹，自动同步到另一台电脑。
+
 - **一次配对**：主机等待、副机输入主机地址、两边核对同一个六位数字，然后自动写好布局、互相信任证书、创建同步目录，不再有任何确认框。
 
 ## 界面
@@ -27,14 +29,16 @@
 
 | 版本 | 内容 | 下载 |
 | --- | --- | --- |
-| [`unified-setup-v0.3.0`](https://github.com/qiyu-lu/deskflow-duo/releases/tag/unified-setup-v0.3.0) | 一次配对 + 文件同步 + 输入广播（本分支） | [Windows 安装包](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.3.0/deskflow-unified-setup-v0.3.0-windows-x64.msi) · [Windows 便携版](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.3.0/deskflow-unified-setup-v0.3.0-windows-x64-portable.7z) · [Ubuntu 26.04 DEB](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.3.0/deskflow-unified-setup-v0.3.0-ubuntu-26.04-x86_64.deb) · [Flatpak](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.3.0/deskflow-unified-setup-v0.3.0-linux-x86_64.flatpak) |
+| [`unified-setup-v0.4.0`](https://github.com/qiyu-lu/deskflow-duo/releases/tag/unified-setup-v0.4.0) | 一次配对 + 文件同步 + 输入广播 + 截图同步（本分支） | [Windows 安装包](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.4.0/deskflow-unified-setup-v0.4.0-windows-x64.msi) · [Windows 便携版](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.4.0/deskflow-unified-setup-v0.4.0-windows-x64-portable.7z) · [Ubuntu 26.04 DEB](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.4.0/deskflow-unified-setup-v0.4.0-ubuntu-26.04-x86_64.deb) · [Flatpak](https://github.com/qiyu-lu/deskflow-duo/releases/download/unified-setup-v0.4.0/deskflow-unified-setup-v0.4.0-linux-x86_64.flatpak) |
+
 | [`input-broadcast-v0.2.0`](https://github.com/qiyu-lu/deskflow-duo/releases/tag/input-broadcast-v0.2.0) | 仅输入广播 | [Windows](https://github.com/qiyu-lu/deskflow-duo/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-windows-x64.zip) · [Ubuntu DEB](https://github.com/qiyu-lu/deskflow-duo/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-ubuntu-x64.zip) · [Flatpak](https://github.com/qiyu-lu/deskflow-duo/releases/download/input-broadcast-v0.2.0/deskflow-input-broadcast-v0.2.0-flatpak-x64.zip) |
 
 - Windows：运行 `.msi` 安装；便携版解压 `.7z` 后直接运行 `deskflow.exe`。
 - Ubuntu 26.04：`sudo apt install ./deskflow-*.deb`。DEB 在 26.04 上构建、依赖 Qt 6.10，24.04 及更早的版本装不上。
 - 其他 Linux 发行版（包括 Ubuntu 20.04 / 22.04 / 24.04）：用 Flatpak，`flatpak install --user ./deskflow-*.flatpak`。Flatpak 自带运行库，不受系统版本限制，已装旧版时同一条命令直接升级。
 
-安装和配对的详细步骤见[两台电脑一键配对指南](../docs/QuickStart.zh_CN.md)，广播功能的行为和限制见[键鼠广播使用指南](../docs/InputBroadcastGuide.zh_CN.md)。
+安装和配对的详细步骤见[两台电脑一键配对指南](../docs/QuickStart.zh_CN.md)，广播功能的行为和限制见[键鼠广播使用指南](../docs/InputBroadcastGuide.zh_CN.md)，截图同步的设置和限制见[截图同步使用指南](../docs/ScreenshotGuide.zh_CN.md)。
+
 
 ## 已知限制
 
