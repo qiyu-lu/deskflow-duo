@@ -166,6 +166,10 @@ p, li { white-space: pre-wrap; }
         <source>Disable keyboard broadcasting</source>
         <translation>关闭键盘广播</translation>
     </message>
+    <message>
+        <source>Take a screenshot into the sync folder</source>
+        <translation>截图并保存到同步文件夹</translation>
+    </message>
 </context>
 <context>
     <name>ClientConfigDialog</name>
@@ -1810,6 +1814,57 @@ Enabling this setting will disable the server config GUI.</source>
     <message>
         <source>Input events from the server are being applied on this computer.</source>
         <translation>正在此计算机上应用来自服务端的输入事件。</translation>
+    </message>
+</context>
+<context>
+    <name>deskflow::gui::ScreenshotService</name>
+    <message>
+        <source>no primary screen available</source>
+        <translation>没有可用的主屏幕</translation>
+    </message>
+    <message>
+        <source>screen grab returned an empty image</source>
+        <translation>屏幕抓取返回了空图像</translation>
+    </message>
+    <message>
+        <source>could not write the image to %1</source>
+        <translation>无法将图像写入 %1</translation>
+    </message>
+    <message>
+        <source>file sync folder is not configured yet</source>
+        <translation>尚未配置文件同步文件夹</translation>
+    </message>
+    <message>
+        <source>could not create the screenshots folder under %1</source>
+        <translation>无法在 %1 下创建截图文件夹</translation>
+    </message>
+    <message>
+        <source>session D-Bus is not available</source>
+        <translation>会话 D-Bus 不可用</translation>
+    </message>
+    <message>
+        <source>the screenshot portal is not available</source>
+        <translation>截图门户不可用</translation>
+    </message>
+    <message>
+        <source>could not listen for the screenshot portal response</source>
+        <translation>无法监听截图门户的响应</translation>
+    </message>
+    <message>
+        <source>the screenshot portal declined the request or timed out</source>
+        <translation>截图门户拒绝了请求或已超时</translation>
+    </message>
+    <message>
+        <source>the screenshot portal returned an unusable location</source>
+        <translation>截图门户返回了无法使用的位置</translation>
+    </message>
+    <message>
+        <source>could not copy the portal screenshot to %1</source>
+        <translation>无法将门户截图复制到 %1</translation>
+    </message>
+    <message>
+        <source>Wayland capture is only available on Linux</source>
+        <translation>Wayland 截图仅在 Linux 上可用</translation>
     </message>
 </context>
 <context>
