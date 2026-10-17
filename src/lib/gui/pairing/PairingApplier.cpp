@@ -11,6 +11,8 @@
 #include "net/FingerprintDatabase.h"
 
 #include <QDir>
+#include <QHostAddress>
+#include <QUrl>
 
 namespace deskflow::gui::pairing {
 
@@ -119,7 +121,20 @@ void PairingApplier::applySyncPeer()
     return;
   }
 
-  m_sync.setPeer(m_remote.syncDeviceId, m_remote.computerName, [this, title](const sync::SyncthingClient::Reply &reply) {
+  // the addresses the other computer reported, the one we just talked to first; discovery stays as the fallback
+  QStringList preferred;
+  QStringList others;
+  const QHostAddress remoteHost(m_remoteAddress);
+  for (const auto &address : m_remote.syncAddresses) {
+    if (!remoteHost.isNull() && QHostAddress(QUrl(address).host()) == remoteHost) {
+      preferred.append(address);
+    } else {
+      others.append(address);
+    }
+  }
+  const QStringList addresses = preferred + others;
+
+  const auto onPeerSet = [this, title](const sync::SyncthingClient::Reply &reply) {
     if (!reply.ok) {
       m_warnings.append(tr("Could not add %1 to file sync: %2").arg(m_remote.computerName, reply.error));
       Q_EMIT stepFinished(title, false, reply.error);
@@ -128,7 +143,8 @@ void PairingApplier::applySyncPeer()
     }
     Q_EMIT stepFinished(title, true, tr("%1 added.").arg(m_remote.computerName));
     applySyncFolder();
-  });
+  };
+  m_sync.setPeer(m_remote.syncDeviceId, m_remote.computerName, addresses, onPeerSet);
 }
 
 void PairingApplier::applySyncFolder()

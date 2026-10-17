@@ -43,6 +43,9 @@ struct Pair
     clientInfo.computerName = QStringLiteral("laptop");
     clientInfo.isServer = false;
     clientInfo.syncDeviceId = QStringLiteral("CLIENT-DEVICE-ID");
+    clientInfo.syncAddresses = {
+        QStringLiteral("tcp://192.168.1.20:22000"), QStringLiteral("quic://192.168.1.20:22000")
+    };
     clientInfo.tlsFingerprint = QStringLiteral("bb").repeated(32);
 
     QObject::connect(&server, &PairingService::exchanged, [this](const PairingInfo &, const QString &code) {
@@ -101,6 +104,8 @@ void PairingServiceTests::testExchangeAndAccept()
   QCOMPARE(pair.serverCode, PairingService::makeConfirmationCode(pair.serverInfo, pair.clientInfo));
   QCOMPARE(pair.server.remoteInfo().computerName, QStringLiteral("laptop"));
   QCOMPARE(pair.server.remoteInfo().syncDeviceId, QStringLiteral("CLIENT-DEVICE-ID"));
+  QCOMPARE(pair.server.remoteInfo().syncAddresses, pair.clientInfo.syncAddresses);
+  QVERIFY(pair.client.remoteInfo().syncAddresses.isEmpty());
   QCOMPARE(pair.client.remoteInfo().computerName, QStringLiteral("desk"));
   QVERIFY(pair.client.remoteInfo().isServer);
   QVERIFY(pair.client.remoteInfo().clientOnLeft);

@@ -24,6 +24,10 @@
     <firewall:FirewallException Id="ServerFirewallException" Name="Deskflow Server" Program="[INSTALL_ROOT]deskflow-core.exe" Scope="any"/>
     <firewall:FirewallException Id="ClientFirewallException" Name="Deskflow Client" Program="[INSTALL_ROOT]deskflow-core.exe" Scope="any"/>
   </CPackWiXFragment>
+
+  <CPackWiXFragment Id="CM_CP_deskflow.exe">
+    <firewall:FirewallException Id="PairingFirewallException" Name="Deskflow Pairing" Program="[INSTALL_ROOT]deskflow.exe" Scope="any"/>
+  </CPackWiXFragment>
 @SYNCTHING_WIX_FRAGMENT@
 
   <CPackWiXFragment Id="#PRODUCT">

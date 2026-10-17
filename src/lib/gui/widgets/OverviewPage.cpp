@@ -370,6 +370,9 @@ void OverviewPage::setSyncState(const SyncSummary &summary, SyncthingProcess::St
       break;
     }
   }
+  if (error.isEmpty()) {
+    error = summary.listenError;
+  }
   m_lblSyncError->setVisible(summary.apiReachable && !error.isEmpty());
   m_lblSyncError->setText(error);
 }

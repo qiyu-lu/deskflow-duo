@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QTimer>
 
 class QTcpServer;
@@ -27,6 +28,7 @@ struct PairingInfo
   bool isServer = false;  //!< keyboard and mouse are attached to this computer
   bool clientOnLeft = false; //!< server only: the client sits to the left of the server
   QString syncFolderPath; //!< informational, the shared folder on that computer
+  QStringList syncAddresses; //!< LAN addresses of that computer's file sync, e.g. tcp://192.168.1.20:22000
 
   QJsonObject toJson() const;
   static PairingInfo fromJson(const QJsonObject &object);

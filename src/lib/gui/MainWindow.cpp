@@ -2011,6 +2011,7 @@ void MainWindow::openPairingWizard()
   local.computerName = Settings::value(Settings::Core::ComputerName).toString();
   local.syncDeviceId = m_syncManager->myDeviceId();
   local.syncFolderPath = m_syncManager->folderPath();
+  local.syncAddresses = m_syncManager->listenAddresses();
   if (TlsUtility::isEnabled() && !m_fingerprint.data.isEmpty()) {
     local.tlsFingerprint = QString::fromLatin1(m_fingerprint.data.toHex());
   }

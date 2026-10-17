@@ -69,6 +69,10 @@ public:
   {
     return m_process->apiUrl();
   }
+  QStringList listenAddresses() const
+  {
+    return m_monitor->summary().listenAddresses;
+  }
   QString folderPath() const;
   QString folderId() const;
 
@@ -77,8 +81,9 @@ public:
 
   /**
    * @brief Add (or update) the paired computer as a Syncthing device.
+   * @param addresses static addresses to try first, e.g. tcp://192.168.1.20:22000; discovery stays as the fallback
    */
-  void setPeer(const QString &deviceId, const QString &name, Callback callback);
+  void setPeer(const QString &deviceId, const QString &name, const QStringList &addresses, Callback callback);
 
   /**
    * @brief Create or update the shared folder and share it with the given device.

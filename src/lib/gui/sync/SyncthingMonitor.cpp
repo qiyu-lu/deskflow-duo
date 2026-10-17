@@ -6,8 +6,32 @@
 
 #include "SyncthingMonitor.h"
 
+#include <QHostAddress>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QUrl>
+
+namespace {
+
+// keep only tcp/quic listeners with a concrete LAN host; 0.0.0.0, loopback and link-local entries are useless to a peer
+bool isUsableLanAddress(const QString &address)
+{
+  const QUrl url(address);
+  const auto scheme = url.scheme();
+  if (!scheme.startsWith(QStringLiteral("tcp")) && !scheme.startsWith(QStringLiteral("quic"))) {
+    return false;
+  }
+  const QHostAddress host(url.host());
+  if (host.isNull() || host.isLoopback() || host.isLinkLocal()) {
+    return false;
+  }
+  if (host == QHostAddress::Any || host == QHostAddress::AnyIPv4 || host == QHostAddress::AnyIPv6) {
+    return false;
+  }
+  return url.port() > 0;
+}
+
+} // namespace
 
 namespace deskflow::gui::sync {
 
@@ -81,7 +105,23 @@ void SyncthingMonitor::poll()
       return;
     }
     m_next.apiReachable = true;
-    m_next.myId = reply.object().value(QStringLiteral("myID")).toString();
+    const auto status = reply.object();
+    m_next.myId = status.value(QStringLiteral("myID")).toString();
+    const auto listeners = status.value(QStringLiteral("connectionServiceStatus")).toObject();
+    for (auto it = listeners.constBegin(); it != listeners.constEnd(); ++it) {
+      const auto listener = it.value().toObject();
+      const auto error = listener.value(QStringLiteral("error")).toString();
+      if (!error.isEmpty() && m_next.listenError.isEmpty()) {
+        m_next.listenError = QStringLiteral("%1: %2").arg(it.key(), error);
+      }
+      const auto addresses = listener.value(QStringLiteral("lanAddresses")).toArray();
+      for (const auto &value : addresses) {
+        const auto address = value.toString();
+        if (isUsableLanAddress(address) && !m_next.listenAddresses.contains(address)) {
+          m_next.listenAddresses.append(address);
+        }
+      }
+    }
     gatherDetails(round);
   });
 }

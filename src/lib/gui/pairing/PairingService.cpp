@@ -10,6 +10,7 @@
 
 #include <QCryptographicHash>
 #include <QHostAddress>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -45,6 +46,7 @@ QJsonObject PairingInfo::toJson() const
       {QStringLiteral("isServer"), isServer},
       {QStringLiteral("clientOnLeft"), clientOnLeft},
       {QStringLiteral("syncFolderPath"), syncFolderPath},
+      {QStringLiteral("syncAddresses"), QJsonArray::fromStringList(syncAddresses)},
   };
 }
 
@@ -57,6 +59,13 @@ PairingInfo PairingInfo::fromJson(const QJsonObject &object)
   info.isServer = object.value(QStringLiteral("isServer")).toBool();
   info.clientOnLeft = object.value(QStringLiteral("clientOnLeft")).toBool();
   info.syncFolderPath = object.value(QStringLiteral("syncFolderPath")).toString();
+  const auto addresses = object.value(QStringLiteral("syncAddresses")).toArray();
+  for (const auto &value : addresses) {
+    const auto address = value.toString();
+    if (!address.isEmpty()) {
+      info.syncAddresses.append(address);
+    }
+  }
   return info;
 }
 

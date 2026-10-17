@@ -110,12 +110,21 @@ void SyncManager::refresh()
   m_monitor->refreshNow();
 }
 
-void SyncManager::setPeer(const QString &deviceId, const QString &name, Callback callback)
+void SyncManager::setPeer(const QString &deviceId, const QString &name, const QStringList &addresses, Callback callback)
 {
+  // the addresses the peer told us about come first, "dynamic" keeps discovery as the fallback
+  QStringList all;
+  for (const auto &address : addresses) {
+    if (!address.isEmpty() && address != QStringLiteral("dynamic") && !all.contains(address)) {
+      all.append(address);
+    }
+  }
+  all.append(QStringLiteral("dynamic"));
+
   QJsonObject device;
   device.insert(QStringLiteral("deviceID"), deviceId);
   device.insert(QStringLiteral("name"), name);
-  device.insert(QStringLiteral("addresses"), QJsonArray{QStringLiteral("dynamic")});
+  device.insert(QStringLiteral("addresses"), QJsonArray::fromStringList(all));
   device.insert(QStringLiteral("autoAcceptFolders"), true);
   device.insert(QStringLiteral("paused"), false);
   m_client->setDevice(device, [this, callback](const SyncthingClient::Reply &reply) {

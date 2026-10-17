@@ -56,6 +56,9 @@ PairingWizard::PairingWizard(
 
   // keep the sync device id fresh while the wizard is open, the sync service may still be starting
   connect(&syncManager, &sync::SyncManager::summaryChanged, this, [this](const sync::SyncSummary &summary) {
+    if (!summary.listenAddresses.isEmpty() && m_local.syncAddresses.isEmpty()) {
+      m_local.syncAddresses = summary.listenAddresses;
+    }
     if (!summary.myId.isEmpty() && m_local.syncDeviceId.isEmpty()) {
       m_local.syncDeviceId = summary.myId;
       if (auto *role = qobject_cast<RolePage *>(page(Page_Role)); role && currentId() == Page_Role) {

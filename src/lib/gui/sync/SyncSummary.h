@@ -8,6 +8,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 namespace deskflow::gui::sync {
 
@@ -55,6 +56,8 @@ struct SyncSummary
   QString myId;
   QString myName;
   QString lastError;
+  QString listenError;         //!< first listener error, for example the port is used by another Syncthing
+  QStringList listenAddresses; //!< LAN addresses other devices can reach this instance at, e.g. tcp://192.168.1.5:22000
   QList<Peer> peers;
   QList<Folder> folders;
   Overall overall = Overall::Unavailable;
