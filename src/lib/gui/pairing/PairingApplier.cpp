@@ -153,14 +153,15 @@ void PairingApplier::applySyncFolder()
   Q_EMIT stepStarted(title);
 
   const auto path = m_sync.folderPath();
-  m_sync.ensureSharedFolder(m_remote.syncDeviceId, path, [this, title, path](const sync::SyncthingClient::Reply &reply) {
+  m_sync.ensureSharedFolder(m_remote.syncDeviceId, path, [this, title](const sync::SyncthingClient::Reply &reply) {
     if (!reply.ok) {
       m_warnings.append(tr("Could not create the shared folder: %1").arg(reply.error));
       Q_EMIT stepFinished(title, false, reply.error);
       done();
       return;
     }
-    Q_EMIT stepFinished(title, true, path);
+    // an existing folder keeps its own path, so report where it really is
+    Q_EMIT stepFinished(title, true, m_sync.folderPath());
     // folders shared later on through the web UI land in the home directory
     m_sync.setDefaultFolderParent(QDir::homePath(), [this](const sync::SyncthingClient::Reply &) { done(); });
   });

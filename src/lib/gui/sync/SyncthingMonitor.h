@@ -35,6 +35,13 @@ public:
     return m_summary;
   }
 
+  /**
+   * @brief Expand a folder path the way Syncthing does: a leading "~" means the home directory.
+   *
+   * Syncthing keeps folder paths exactly as they were typed, so "~/Sync" can come back from its configuration.
+   */
+  static QString expandPath(const QString &path);
+
 Q_SIGNALS:
   void summaryChanged(const deskflow::gui::sync::SyncSummary &summary);
 

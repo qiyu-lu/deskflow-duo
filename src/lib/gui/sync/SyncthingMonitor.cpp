@@ -6,6 +6,7 @@
 
 #include "SyncthingMonitor.h"
 
+#include <QDir>
 #include <QHostAddress>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -62,6 +63,18 @@ SyncthingMonitor::~SyncthingMonitor()
 {
   // invalidate callbacks of any round still in flight
   m_round++;
+}
+
+QString SyncthingMonitor::expandPath(const QString &path)
+{
+  // same rule as Syncthing's fs.ExpandTilde: only "~" on its own or followed by a separator
+  QString expanded = path;
+  if (path == QStringLiteral("~")) {
+    expanded = QDir::homePath();
+  } else if (path.startsWith(QStringLiteral("~/")) || path.startsWith(QStringLiteral("~\\"))) {
+    expanded = QDir::homePath() + QLatin1Char('/') + path.mid(2);
+  }
+  return expanded.isEmpty() ? expanded : QDir::cleanPath(expanded);
 }
 
 void SyncthingMonitor::setActive(bool active)
@@ -160,9 +173,17 @@ void SyncthingMonitor::gatherDetails(int round)
       SyncSummary::Folder entry;
       entry.id = folder.value(QStringLiteral("id")).toString();
       entry.label = folder.value(QStringLiteral("label")).toString();
-      entry.path = folder.value(QStringLiteral("path")).toString();
+      entry.path = expandPath(folder.value(QStringLiteral("path")).toString());
+      entry.type = folder.value(QStringLiteral("type")).toString();
       entry.paused = folder.value(QStringLiteral("paused")).toBool();
-      entry.shared = folder.value(QStringLiteral("devices")).toArray().size() > 1;
+      const auto folderDevices = folder.value(QStringLiteral("devices")).toArray();
+      for (const auto &deviceValue : folderDevices) {
+        const auto deviceId = deviceValue.toObject().value(QStringLiteral("deviceID")).toString();
+        if (!deviceId.isEmpty() && deviceId != m_next.myId && !entry.sharedWith.contains(deviceId)) {
+          entry.sharedWith.append(deviceId);
+        }
+      }
+      entry.shared = !entry.sharedWith.isEmpty();
       m_next.folders.append(entry);
     }
 
@@ -217,7 +238,15 @@ void SyncthingMonitor::gatherDetails(int round)
           return;
         }
         if (reply.ok && i < m_next.peers.size()) {
-          m_next.peers[i].completion = reply.object().value(QStringLiteral("completion")).toDouble(100.0);
+          const auto status = reply.object();
+          // with no folder shared with that device (e.g. it was removed in the web interface) Syncthing reports
+          // 0% although the peer needs nothing; treat "nothing needed" as complete instead of syncing forever
+          const bool nothingNeeded = status.contains(QStringLiteral("needBytes")) &&
+                                     status.value(QStringLiteral("needItems")).toDouble() <= 0 &&
+                                     status.value(QStringLiteral("needDeletes")).toDouble() <= 0 &&
+                                     status.value(QStringLiteral("needBytes")).toDouble() <= 0;
+          m_next.peers[i].completion =
+              nothingNeeded ? 100.0 : status.value(QStringLiteral("completion")).toDouble(100.0);
         }
         replyDone(round);
       });

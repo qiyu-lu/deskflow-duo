@@ -73,8 +73,19 @@ public:
   {
     return m_monitor->summary().listenAddresses;
   }
+  /**
+   * @brief Where the shared folder lives on this computer.
+   *
+   * Syncthing's configuration is the source of truth: when the folder is moved in the Syncthing web interface
+   * (removed and added again) this follows it. The last known path is cached for when Syncthing is not running.
+   */
   QString folderPath() const;
   QString folderId() const;
+
+  /**
+   * @brief The path Syncthing currently reports for a folder, empty if it is unknown or Syncthing is not reachable.
+   */
+  QString livePathOf(const QString &folderId) const;
 
   void setPaused(bool paused, Callback callback = {});
   void refresh();
@@ -87,6 +98,7 @@ public:
 
   /**
    * @brief Create or update the shared folder and share it with the given device.
+   * @param path where to create the folder; an existing folder keeps its path, since Syncthing never moves one
    */
   void ensureSharedFolder(const QString &peerDeviceId, const QString &path, Callback callback);
 
@@ -102,6 +114,7 @@ Q_SIGNALS:
 
 private:
   void onProcessStateChanged(SyncthingProcess::State state);
+  void rememberFolderPath(const SyncSummary &summary);
 
   SyncthingProcess *m_process;
   SyncthingClient *m_client;

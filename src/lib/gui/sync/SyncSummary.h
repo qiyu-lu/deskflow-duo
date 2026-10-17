@@ -41,9 +41,11 @@ struct SyncSummary
   {
     QString id;
     QString label;
-    QString path;
+    QString path;  //!< where the folder lives on this computer, with a leading "~" already expanded
+    QString type;  //!< raw syncthing folder type: sendreceive, sendonly, receiveonly, receiveencrypted
     QString state; //!< raw syncthing state: idle, scanning, syncing, error, ...
     QString error;
+    QStringList sharedWith; //!< ids of the other devices the folder is shared with
     bool paused = false;
     bool shared = false;
     qint64 globalBytes = 0;

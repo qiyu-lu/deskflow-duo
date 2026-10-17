@@ -29,6 +29,8 @@ SyncManager::SyncManager(QObject *parent)
     m_monitor->setActive(true);
   });
   connect(m_process, &SyncthingProcess::errorOccurred, this, &SyncManager::errorOccurred);
+  // keep the cached folder path current before anyone else looks at the new summary
+  connect(m_monitor, &SyncthingMonitor::summaryChanged, this, &SyncManager::rememberFolderPath);
   connect(m_monitor, &SyncthingMonitor::summaryChanged, this, &SyncManager::summaryChanged);
 }
 
@@ -87,7 +89,39 @@ void SyncManager::shutdown(int timeoutMs)
 
 QString SyncManager::folderPath() const
 {
-  return QDir::cleanPath(Settings::value(Settings::Sync::FolderPath).toString());
+  const auto live = livePathOf(folderId());
+  if (!live.isEmpty()) {
+    return live;
+  }
+  return SyncthingMonitor::expandPath(Settings::value(Settings::Sync::FolderPath).toString());
+}
+
+QString SyncManager::livePathOf(const QString &folderId) const
+{
+  if (!m_monitor->summary().apiReachable) {
+    return {};
+  }
+  for (const auto &folder : m_monitor->summary().folders) {
+    if (folder.id == folderId) {
+      return folder.path;
+    }
+  }
+  return {};
+}
+
+void SyncManager::rememberFolderPath(const SyncSummary &summary)
+{
+  if (!summary.apiReachable) {
+    return;
+  }
+  const auto id = folderId();
+  for (const auto &folder : summary.folders) {
+    if (folder.id == id && !folder.path.isEmpty()) {
+      // setValue ignores unchanged values, so this only writes when the folder really moved
+      Settings::setValue(Settings::Sync::FolderPath, folder.path);
+      return;
+    }
+  }
 }
 
 QString SyncManager::folderId() const
@@ -137,23 +171,39 @@ void SyncManager::setPeer(const QString &deviceId, const QString &name, const QS
 
 void SyncManager::ensureSharedFolder(const QString &peerDeviceId, const QString &path, Callback callback)
 {
-  const auto cleanPath = QDir::cleanPath(path);
-  if (!QDir().mkpath(cleanPath)) {
-    SyncthingClient::Reply reply;
-    reply.error = tr("Could not create the folder %1").arg(cleanPath);
-    if (callback) {
-      callback(reply);
-    }
-    return;
-  }
-
+  const auto requestedPath = QDir::cleanPath(path);
   const auto id = folderId();
-  m_client->getFolder(id, [this, id, cleanPath, peerDeviceId, callback](const SyncthingClient::Reply &existing) {
+  m_client->getFolder(id, [this, id, requestedPath, peerDeviceId, callback](const SyncthingClient::Reply &existing) {
+    // only a 404 means "no such folder yet"; on any other failure we cannot tell, so do not overwrite anything
+    if (!existing.ok && existing.status != 404) {
+      if (callback) {
+        callback(existing);
+      }
+      return;
+    }
+
     QJsonObject folder;
     QJsonArray devices;
+    // Syncthing never moves an existing folder (its web interface keeps the path read-only, and pointing a folder
+    // at another directory can look like mass deletion), so an existing folder keeps its own path.
+    QString folderPath = requestedPath;
     if (existing.ok) {
       folder = existing.object();
       devices = folder.value(QStringLiteral("devices")).toArray();
+      const auto currentPath = folder.value(QStringLiteral("path")).toString();
+      if (!currentPath.isEmpty()) {
+        folderPath = currentPath;
+      }
+    }
+
+    const auto localPath = SyncthingMonitor::expandPath(folderPath);
+    if (!QDir().mkpath(localPath)) {
+      SyncthingClient::Reply reply;
+      reply.error = tr("Could not create the folder %1").arg(localPath);
+      if (callback) {
+        callback(reply);
+      }
+      return;
     }
 
     bool shared = false;
@@ -168,15 +218,15 @@ void SyncManager::ensureSharedFolder(const QString &peerDeviceId, const QString 
 
     folder.insert(QStringLiteral("id"), id);
     folder.insert(QStringLiteral("label"), QString(kSyncFolderLabel));
-    folder.insert(QStringLiteral("path"), cleanPath);
+    folder.insert(QStringLiteral("path"), folderPath);
     folder.insert(QStringLiteral("type"), QStringLiteral("sendreceive"));
     folder.insert(QStringLiteral("devices"), devices);
     folder.insert(QStringLiteral("paused"), false);
     folder.insert(QStringLiteral("fsWatcherEnabled"), true);
 
-    m_client->setFolder(folder, [this, cleanPath, callback](const SyncthingClient::Reply &reply) {
+    m_client->setFolder(folder, [this, localPath, callback](const SyncthingClient::Reply &reply) {
       if (reply.ok) {
-        Settings::setValue(Settings::Sync::FolderPath, cleanPath);
+        Settings::setValue(Settings::Sync::FolderPath, localPath);
       }
       m_monitor->refreshNow();
       if (callback) {
