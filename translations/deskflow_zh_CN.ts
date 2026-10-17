@@ -409,6 +409,10 @@ Do you want to connect to the server?
         <translation>您当前的 TLS 密钥长度小于允许的最小值，将生成一个新的 2048 位密钥。</translation>
     </message>
     <message>
+        <source>The screenshot could not be saved: %1.</source>
+        <translation>截图保存失败：%1。</translation>
+    </message>
+    <message>
         <source>Could not change the file sync state: %1</source>
         <translation>无法更改文件同步状态：%1</translation>
     </message>
@@ -555,6 +559,14 @@ Do you want to connect to the server?
     <message>
         <source>Disconnected from %1, retrying...</source>
         <translation>与 %1 断开，正在重试...</translation>
+    </message>
+    <message>
+        <source>Screenshot saved as %1 in %2, it will be synced to %3.</source>
+        <translation>截图已保存到 %2 的 %1，会同步到 %3。</translation>
+    </message>
+    <message>
+        <source>Screenshot saved to %1, but it is not synced: %2.</source>
+        <translation>截图已保存到 %1，但不会同步：%2。</translation>
     </message>
     <message>
         <source>File sync is not running right now, so its settings cannot be opened.</source>
@@ -973,6 +985,30 @@ Additionally, check you are able to %1 the server config file: %2</source>
         <translation>暂停</translation>
     </message>
     <message>
+        <source>%1 (not synced)</source>
+        <translation>%1（未同步）</translation>
+    </message>
+    <message>
+        <source>File sync does not have this folder, so its contents are not synced.</source>
+        <translation>文件同步里没有这个文件夹，所以里面的内容不会同步。</translation>
+    </message>
+    <message>
+        <source>%1 / %2</source>
+        <translation>%1 / %2</translation>
+    </message>
+    <message>
+        <source>not set up yet</source>
+        <translation>尚未设置</translation>
+    </message>
+    <message>
+        <source>Screenshots are not synced: %1.</source>
+        <translation>截图不会同步：%1。</translation>
+    </message>
+    <message>
+        <source>Screenshots are not synced: %1. Use &quot;%2&quot; to pick a synced folder.</source>
+        <translation>截图不会同步：%1。请点“%2”选择一个同步文件夹。</translation>
+    </message>
+    <message>
         <source>Connect two computers</source>
         <translation>把两台电脑连起来</translation>
     </message>
@@ -1011,6 +1047,18 @@ Additionally, check you are able to %1 the server config file: %2</source>
     <message>
         <source>Open</source>
         <translation>打开</translation>
+    </message>
+    <message>
+        <source>Screenshots go to:</source>
+        <translation>截图保存到：</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation>更改...</translation>
+    </message>
+    <message>
+        <source>Choose the synced folder and subfolder for hotkey screenshots.</source>
+        <translation>选择热键截图保存到哪个同步文件夹和子文件夹。</translation>
     </message>
     <message>
         <source>Advanced sync settings...</source>
@@ -1317,6 +1365,73 @@ Additionally, check you are able to %1 the server config file: %2</source>
     <message>
         <source>&lt;center&gt;Screen: &lt;b&gt;%1&lt;/b&gt;&lt;/center&gt;&lt;br&gt;Double click to edit settings&lt;br&gt;Drag screen to the trashcan to remove it</source>
         <translation>&lt;center&gt;屏幕：&lt;b&gt;%1&lt;/b&gt;&lt;/center&gt;&lt;br&gt;双击编辑设置&lt;br&gt;将屏幕拖到垃圾桶以移除</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotLocationDialog</name>
+    <message>
+        <source>Screenshot location</source>
+        <translation>截图保存位置</translation>
+    </message>
+    <message>
+        <source>Screenshots are saved inside a synced folder, so they reach the other computer by themselves. To move a synced folder, use the advanced sync settings; this location follows the folder.</source>
+        <translation>截图会保存在同步文件夹里，这样会自动传到另一台电脑。如果要移动同步文件夹本身，请使用文件同步高级设置，这里的位置会自动跟随。</translation>
+    </message>
+    <message>
+        <source>Synced folder:</source>
+        <translation>同步文件夹：</translation>
+    </message>
+    <message>
+        <source>Leave empty to save directly in the synced folder</source>
+        <translation>留空则直接保存在同步文件夹中</translation>
+    </message>
+    <message>
+        <source>Subfolder:</source>
+        <translation>子文件夹：</translation>
+    </message>
+    <message>
+        <source>%1 (not synced)</source>
+        <translation>%1（未同步）</translation>
+    </message>
+    <message>
+        <source>%1 · %2</source>
+        <translation>%1 · %2</translation>
+    </message>
+    <message>
+        <source>Enter a folder inside the synced folder, for example screenshots or notes/screenshots.</source>
+        <translation>请输入同步文件夹里面的路径，例如 screenshots 或 截图/课堂。</translation>
+    </message>
+    <message>
+        <source>The subfolder has to stay inside the synced folder, so &quot;..&quot; is not allowed.</source>
+        <translation>子文件夹必须位于同步文件夹里面，所以不能使用“..”。</translation>
+    </message>
+    <message>
+        <source>Folder names cannot contain any of these characters: %1</source>
+        <translation>文件夹名称不能包含这些字符：%1</translation>
+    </message>
+    <message>
+        <source>No folder is shared with another computer yet. Pair a computer first, or share a folder in the advanced sync settings.</source>
+        <translation>还没有共享给其他电脑的文件夹。请先配对一台电脑，或在文件同步高级设置里共享一个文件夹。</translation>
+    </message>
+    <message>
+        <source>File sync is not running and no synced folder is known yet.</source>
+        <translation>文件同步没有运行，也还没有已知的同步文件夹。</translation>
+    </message>
+    <message>
+        <source>This folder is not shared with another computer, or this computer only receives changes into it. Choose another folder.</source>
+        <translation>这个文件夹没有共享给其他电脑，或者本机只接收它的变更。请选择其他文件夹。</translation>
+    </message>
+    <message>
+        <source>File sync is not running, so other folders cannot be listed right now. You can still change the subfolder.</source>
+        <translation>文件同步没有运行，暂时无法列出其他文件夹。你仍然可以修改子文件夹。</translation>
+    </message>
+    <message>
+        <source>Screenshots will be synced to %1.</source>
+        <translation>截图会同步到 %1。</translation>
+    </message>
+    <message>
+        <source>Saved in: %1</source>
+        <translation>保存位置：%1</translation>
     </message>
 </context>
 <context>
@@ -1836,7 +1951,27 @@ Enabling this setting will disable the server config GUI.</source>
     </message>
     <message>
         <source>could not create the screenshots folder under %1</source>
-        <translation>无法在 %1 下创建截图文件夹</translation>
+        <translation type="vanished">无法在 %1 下创建截图文件夹</translation>
+    </message>
+    <message>
+        <source>the folder is not shared with another computer, or this computer only receives changes into it</source>
+        <translation>这个文件夹没有共享给其他电脑，或者本机只接收它的变更</translation>
+    </message>
+    <message>
+        <source>file sync no longer has the chosen folder</source>
+        <translation>文件同步里已经没有选定的文件夹</translation>
+    </message>
+    <message>
+        <source>file sync is not running</source>
+        <translation>文件同步没有运行</translation>
+    </message>
+    <message>
+        <source>file sync is turned off</source>
+        <translation>文件同步已关闭</translation>
+    </message>
+    <message>
+        <source>could not create the folder %1</source>
+        <translation>无法创建文件夹 %1</translation>
     </message>
     <message>
         <source>session D-Bus is not available</source>
