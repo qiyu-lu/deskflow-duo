@@ -31,6 +31,7 @@ const auto kSyncBinName = "syncthing";
 const auto kSyncFolderName = "@CMAKE_PROJECT_PROPER_NAME@Sync";
 const auto kSyncFolderId = "@CMAKE_PROJECT_NAME@-sync";
 const auto kSyncFolderLabel = "@CMAKE_PROJECT_PROPER_NAME@ Sync";
+const auto kScreenshotSubfolder = "screenshots";
 const auto kPairingPort = 24802;
 const auto kPairingProtocolVersion = 1;
 

@@ -33,6 +33,8 @@ add_library(${target} STATIC
   TlsUtility.h
   VersionChecker.cpp
   VersionChecker.h
+  capture/ScreenshotLocation.cpp
+  capture/ScreenshotLocation.h
   capture/ScreenshotService.cpp
   capture/ScreenshotService.h
   config/Screen.cpp
@@ -64,6 +66,8 @@ add_library(${target} STATIC
   dialogs/HotkeyDialog.cpp
   dialogs/HotkeyDialog.h
   dialogs/HotkeyDialog.ui
+  dialogs/ScreenshotLocationDialog.cpp
+  dialogs/ScreenshotLocationDialog.h
   dialogs/ScreenSettingsDialog.cpp
   dialogs/ScreenSettingsDialog.h
   dialogs/ScreenSettingsDialog.ui

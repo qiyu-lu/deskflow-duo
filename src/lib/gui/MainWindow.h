@@ -175,6 +175,14 @@ private:
   void openSyncFolder();
   void toggleCoreFromOverview();
   void syncStateChanged();
+
+  // screenshot hotkey: where images go and what happens after a capture
+  deskflow::gui::ScreenshotLocation screenshotLocation() const;
+  void updateScreenshotLocation();
+  void captureScreenshot();
+  void changeScreenshotLocation();
+  void openScreenshotFolder();
+
   QString peerDisplayName() const;
   QString inputStatusText() const;
 

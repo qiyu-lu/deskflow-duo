@@ -140,6 +140,16 @@ public:
     inline static const auto FolderId = QStringLiteral("sync/folderId");
   };
 
+  // Where the screenshot hotkey saves images: a folder of the managed Syncthing instance and a path inside it.
+  // The folder is referenced by its Syncthing id so the location follows the folder wherever Syncthing keeps it.
+  struct Screenshot
+  {
+    inline static const auto FolderId = QStringLiteral("screenshot/folderId");
+    inline static const auto Subfolder = QStringLiteral("screenshot/subfolder");
+    //! last path Syncthing reported for that folder, used while Syncthing is not running
+    inline static const auto LastFolderPath = QStringLiteral("screenshot/lastFolderPath");
+  };
+
   // Result of the guided pairing between two computers
   struct Pairing
   {
@@ -275,6 +285,7 @@ private:
     , QStringLiteral("internalConfig")
     , QStringLiteral("sync")
     , QStringLiteral("pairing")
+    , QStringLiteral("screenshot")
   };
 
   inline static const QStringList m_validKeys = {
@@ -357,6 +368,9 @@ private:
     , Pairing::PeerSyncDeviceId
     , Pairing::PeerSide
     , Pairing::Port
+    , Screenshot::FolderId
+    , Screenshot::Subfolder
+    , Screenshot::LastFolderPath
   };
 
   // When checking the default values this list contains the ones that default to false.

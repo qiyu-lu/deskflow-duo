@@ -7,6 +7,7 @@
 #pragma once
 
 #include "common/Settings.h"
+#include "gui/capture/ScreenshotLocation.h"
 #include "gui/sync/SyncSummary.h"
 #include "gui/sync/SyncthingProcess.h"
 
@@ -55,7 +56,15 @@ public:
       const deskflow::gui::sync::SyncSummary &summary, deskflow::gui::sync::SyncthingProcess::State processState,
       bool syncEnabled
   );
-  void setSyncFolder(const QString &path);
+  /**
+   * @param notSynced file sync runs but no longer has this folder, e.g. it was removed in the web interface
+   */
+  void setSyncFolder(const QString &path, bool notSynced);
+  /**
+   * @brief Show where the screenshot hotkey saves images. Only shown on the computer with the keyboard and mouse,
+   * since that is the one whose hotkey takes the screenshot.
+   */
+  void setScreenshotLocation(const deskflow::gui::ScreenshotLocation &location, bool syncEnabled);
   void setBroadcastTargetsMenu(QMenu *menu);
 
 Q_SIGNALS:
@@ -64,6 +73,8 @@ Q_SIGNALS:
   void mouseBroadcastToggled(bool enabled);
   void keyboardBroadcastToggled(bool enabled);
   void openFolderRequested();
+  void changeScreenshotLocationRequested();
+  void openScreenshotFolderRequested();
   void pauseSyncRequested(bool paused);
   void openSyncthingUiRequested();
   void showFullUiRequested();
@@ -75,6 +86,8 @@ private:
   void buildWelcome();
   void buildDashboard();
   void updateText();
+  void updateFolderRow();
+  void updateScreenshotRow();
   static QString bytesText(qint64 bytes);
 
   QStackedWidget *m_stack = nullptr;
@@ -109,6 +122,11 @@ private:
   QLabel *m_lblFolderCaption = nullptr;
   QLabel *m_lblFolder = nullptr;
   QPushButton *m_btnOpenFolder = nullptr;
+  QLabel *m_lblScreenshotCaption = nullptr;
+  QLabel *m_lblScreenshot = nullptr;
+  QPushButton *m_btnChangeScreenshot = nullptr;
+  QPushButton *m_btnOpenScreenshot = nullptr;
+  QLabel *m_lblScreenshotWarning = nullptr;
   QPushButton *m_btnPause = nullptr;
   QPushButton *m_btnSyncthingUi = nullptr;
   QLabel *m_lblSyncError = nullptr;
@@ -119,4 +137,7 @@ private:
   bool m_isServer = false;
   bool m_running = false;
   QString m_folderPath;
+  bool m_folderNotSynced = false;
+  deskflow::gui::ScreenshotLocation m_screenshotLocation;
+  bool m_screenshotSyncEnabled = true;
 };

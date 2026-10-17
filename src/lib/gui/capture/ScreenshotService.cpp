@@ -37,18 +37,33 @@ bool ScreenshotService::isWayland()
   return QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive);
 }
 
-QString ScreenshotService::buildOutputPath(const QString &folderPath) const
+QString ScreenshotService::buildOutputPath(const QString &directory) const
 {
-  QDir dir(folderPath);
-  const QString subDir = QStringLiteral("screenshots");
-  if (!dir.exists(subDir) && !dir.mkpath(subDir)) {
+  QDir dir(directory);
+  if (!dir.exists() && !dir.mkpath(QStringLiteral("."))) {
     return {};
   }
 
   const QString host = QSysInfo::machineHostName();
   const QString stamp = QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmsszzz"));
   const QString name = QStringLiteral("%1-%2.png").arg(host.isEmpty() ? QStringLiteral("screen") : host, stamp);
-  return dir.filePath(QStringLiteral("%1/%2").arg(subDir, name));
+  return dir.filePath(name);
+}
+
+QString ScreenshotService::notSyncedReason(const ScreenshotLocation &location, bool syncEnabled)
+{
+  using Status = ScreenshotLocation::Status;
+  switch (location.status) {
+  case Status::Synced:
+    return {};
+  case Status::NotShared:
+    return tr("the folder is not shared with another computer, or this computer only receives changes into it");
+  case Status::FolderMissing:
+    return tr("file sync no longer has the chosen folder");
+  case Status::SyncUnavailable:
+    return syncEnabled ? tr("file sync is not running") : tr("file sync is turned off");
+  }
+  return {};
 }
 
 bool ScreenshotService::saveWithQtGrab(const QString &filePath, QString &errorOut) const
@@ -74,18 +89,18 @@ bool ScreenshotService::saveWithQtGrab(const QString &filePath, QString &errorOu
   return true;
 }
 
-QString ScreenshotService::capture(const QString &folderPath)
+QString ScreenshotService::capture(const QString &directory)
 {
-  if (folderPath.isEmpty()) {
+  if (directory.isEmpty()) {
     const QString message = tr("file sync folder is not configured yet");
     qWarning("screenshot capture skipped: %s", qPrintable(message));
     Q_EMIT failed(message);
     return {};
   }
 
-  const QString filePath = buildOutputPath(folderPath);
+  const QString filePath = buildOutputPath(directory);
   if (filePath.isEmpty()) {
-    const QString message = tr("could not create the screenshots folder under %1").arg(folderPath);
+    const QString message = tr("could not create the folder %1").arg(QDir::toNativeSeparators(directory));
     qWarning("screenshot capture failed: %s", qPrintable(message));
     Q_EMIT failed(message);
     return {};

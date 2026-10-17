@@ -7,9 +7,12 @@
 #include "OverviewPage.h"
 
 #include "common/Constants.h"
+#include "gui/capture/ScreenshotService.h"
 
 #include <QCheckBox>
+#include <QDir>
 #include <QEvent>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -22,6 +25,8 @@
 #include <QVBoxLayout>
 
 using namespace deskflow::gui::sync;
+using deskflow::gui::ScreenshotLocation;
+using deskflow::gui::ScreenshotService;
 
 namespace {
 const int kPageMargin = 18;
@@ -185,7 +190,9 @@ void OverviewPage::buildDashboard()
   m_syncProgress->setVisible(false);
   syncLayout->addWidget(m_syncProgress);
 
-  auto *folderRow = new QHBoxLayout();
+  // the shared folder and, on the keyboard and mouse side, where screenshots go; a grid keeps them aligned
+  auto *folderGrid = new QGridLayout();
+  folderGrid->setColumnStretch(1, 1);
   m_lblFolderCaption = new QLabel(m_syncCard);
   m_lblFolder = new QLabel(m_syncCard);
   m_lblFolder->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -193,10 +200,32 @@ void OverviewPage::buildDashboard()
   m_btnOpenFolder = new QPushButton(m_syncCard);
   m_btnOpenFolder->setIcon(QIcon::fromTheme(QStringLiteral("document-open")));
   connect(m_btnOpenFolder, &QPushButton::clicked, this, &OverviewPage::openFolderRequested);
-  folderRow->addWidget(m_lblFolderCaption);
-  folderRow->addWidget(m_lblFolder, 1);
-  folderRow->addWidget(m_btnOpenFolder);
-  syncLayout->addLayout(folderRow);
+  folderGrid->addWidget(m_lblFolderCaption, 0, 0);
+  folderGrid->addWidget(m_lblFolder, 0, 1);
+  folderGrid->addWidget(m_btnOpenFolder, 0, 3);
+
+  m_lblScreenshotCaption = new QLabel(m_syncCard);
+  m_lblScreenshot = new QLabel(m_syncCard);
+  m_lblScreenshot->setTextInteractionFlags(Qt::TextSelectableByMouse);
+  m_lblScreenshot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  m_btnChangeScreenshot = new QPushButton(m_syncCard);
+  m_btnChangeScreenshot->setIcon(QIcon::fromTheme(QStringLiteral("document-edit")));
+  connect(m_btnChangeScreenshot, &QPushButton::clicked, this, &OverviewPage::changeScreenshotLocationRequested);
+  m_btnOpenScreenshot = new QPushButton(m_syncCard);
+  m_btnOpenScreenshot->setIcon(QIcon::fromTheme(QStringLiteral("document-open")));
+  connect(m_btnOpenScreenshot, &QPushButton::clicked, this, &OverviewPage::openScreenshotFolderRequested);
+  folderGrid->addWidget(m_lblScreenshotCaption, 1, 0);
+  folderGrid->addWidget(m_lblScreenshot, 1, 1);
+  folderGrid->addWidget(m_btnChangeScreenshot, 1, 2);
+  folderGrid->addWidget(m_btnOpenScreenshot, 1, 3);
+
+  syncLayout->addLayout(folderGrid);
+
+  // outside the grid: a word-wrapped label spanning grid columns does not get the height it needs
+  m_lblScreenshotWarning = new QLabel(m_syncCard);
+  m_lblScreenshotWarning->setWordWrap(true);
+  m_lblScreenshotWarning->setVisible(false);
+  syncLayout->addWidget(m_lblScreenshotWarning);
 
   m_lblSyncError = new QLabel(m_syncCard);
   m_lblSyncError->setWordWrap(true);
@@ -243,6 +272,7 @@ void OverviewPage::setIdentity(const QString &computerName, const QString &peerN
     m_lblPeer->setText(tr("Paired with %1").arg(peerName));
   }
   m_btnPair->setText(paired ? tr("Pair again...") : tr("Pair a computer..."));
+  updateScreenshotRow();
 }
 
 void OverviewPage::setInputStatus(const InputStatus &status)
@@ -377,12 +407,66 @@ void OverviewPage::setSyncState(const SyncSummary &summary, SyncthingProcess::St
   m_lblSyncError->setText(error);
 }
 
-void OverviewPage::setSyncFolder(const QString &path)
+void OverviewPage::setSyncFolder(const QString &path, bool notSynced)
 {
   m_folderPath = path;
-  m_lblFolder->setText(path);
-  m_lblFolder->setToolTip(path);
-  m_btnOpenFolder->setEnabled(!path.isEmpty());
+  m_folderNotSynced = notSynced;
+  updateFolderRow();
+}
+
+void OverviewPage::updateFolderRow()
+{
+  const auto path = QDir::toNativeSeparators(m_folderPath);
+  m_lblFolder->setText(m_folderNotSynced ? tr("%1 (not synced)").arg(path) : path);
+  m_lblFolder->setToolTip(
+      m_folderNotSynced ? tr("File sync does not have this folder, so its contents are not synced.") : path
+  );
+  m_btnOpenFolder->setEnabled(!m_folderPath.isEmpty());
+}
+
+void OverviewPage::setScreenshotLocation(const ScreenshotLocation &location, bool syncEnabled)
+{
+  m_screenshotLocation = location;
+  m_screenshotSyncEnabled = syncEnabled;
+  updateScreenshotRow();
+}
+
+void OverviewPage::updateScreenshotRow()
+{
+  const bool visible = m_isServer;
+  m_lblScreenshotCaption->setVisible(visible);
+  m_lblScreenshot->setVisible(visible);
+  m_btnChangeScreenshot->setVisible(visible);
+  m_btnOpenScreenshot->setVisible(visible);
+
+  const auto &location = m_screenshotLocation;
+  const auto directory = QDir::toNativeSeparators(location.directory);
+  QString text;
+  if (!location.folderFound()) {
+    text = directory;
+  } else if (location.subfolder.isEmpty()) {
+    text = location.folderLabel;
+  } else {
+    text = tr("%1 / %2").arg(location.folderLabel, QDir::toNativeSeparators(location.subfolder));
+  }
+  m_lblScreenshot->setText(text.isEmpty() ? tr("not set up yet") : text);
+  m_lblScreenshot->setToolTip(directory);
+  m_btnOpenScreenshot->setEnabled(!location.directory.isEmpty());
+
+  // while file sync starts up the status line above already says so, no need to repeat it here
+  QString warning;
+  const bool starting = location.status == ScreenshotLocation::Status::SyncUnavailable && m_screenshotSyncEnabled;
+  if (!location.isSynced() && !starting) {
+    const auto reason = ScreenshotService::notSyncedReason(location, m_screenshotSyncEnabled);
+    if (location.status == ScreenshotLocation::Status::SyncUnavailable) {
+      warning = tr("Screenshots are not synced: %1.").arg(reason);
+    } else {
+      warning = tr("Screenshots are not synced: %1. Use \"%2\" to pick a synced folder.")
+                    .arg(reason, m_btnChangeScreenshot->text());
+    }
+  }
+  m_lblScreenshotWarning->setText(warning);
+  m_lblScreenshotWarning->setVisible(visible && !warning.isEmpty());
 }
 
 void OverviewPage::setBroadcastTargetsMenu(QMenu *menu)
@@ -417,10 +501,17 @@ void OverviewPage::updateText()
   m_syncCard->setTitle(tr("File sync"));
   m_lblFolderCaption->setText(tr("Shared folder:"));
   m_btnOpenFolder->setText(tr("Open"));
+  m_lblScreenshotCaption->setText(tr("Screenshots go to:"));
+  m_btnChangeScreenshot->setText(tr("Change..."));
+  m_btnChangeScreenshot->setToolTip(tr("Choose the synced folder and subfolder for hotkey screenshots."));
+  m_btnOpenScreenshot->setText(tr("Open"));
   m_btnSyncthingUi->setText(tr("Advanced sync settings..."));
   m_btnSyncthingUi->setToolTip(tr("Opens the Syncthing web interface in your browser for everything beyond the basics."));
   m_btnFullUi->setText(tr("Show full interface"));
   m_lblSyncError->setStyleSheet(QStringLiteral("color: %1;").arg(palette().color(QPalette::Link).name()));
+  m_lblScreenshotWarning->setStyleSheet(m_lblSyncError->styleSheet());
+  updateFolderRow();
+  updateScreenshotRow();
 }
 
 QString OverviewPage::bytesText(qint64 bytes)

@@ -202,6 +202,12 @@ QVariant Settings::defaultValue(const QString &key)
   if (key == Sync::FolderId)
     return kSyncFolderId;
 
+  if (key == Screenshot::FolderId)
+    return kSyncFolderId;
+
+  if (key == Screenshot::Subfolder)
+    return kScreenshotSubfolder;
+
   if (key == Pairing::Port)
     return kPairingPort;
 

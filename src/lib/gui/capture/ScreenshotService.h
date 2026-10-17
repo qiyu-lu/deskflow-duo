@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "ScreenshotLocation.h"
+
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
@@ -32,11 +34,18 @@ public:
   explicit ScreenshotService(QObject *parent = nullptr);
 
   /**
-   * @brief Capture the primary screen into <folderPath>/screenshots/.
-   * @param folderPath the Syncthing-managed folder; capture is skipped if empty.
+   * @brief Capture the primary screen into a directory, creating it when needed.
+   * @param directory where to save the image, normally ScreenshotLocation::directory; capture is skipped if empty.
    * @return the saved file path, or an empty string on failure.
    */
-  QString capture(const QString &folderPath);
+  QString capture(const QString &directory);
+
+  /**
+   * @brief Why images saved at this location do not reach the other computer, empty if they do.
+   *
+   * A sentence fragment meant to follow a colon, shared by the home page and the capture notification.
+   */
+  static QString notSyncedReason(const ScreenshotLocation &location, bool syncEnabled);
 
 Q_SIGNALS:
   void captured(const QString &filePath);
@@ -47,8 +56,8 @@ private Q_SLOTS:
   void onPortalResponse(uint response, const QVariantMap &results);
 
 private:
-  /// Build "<folderPath>/screenshots/<host>-<timestamp>.png", creating the dir.
-  QString buildOutputPath(const QString &folderPath) const;
+  /// Build "<directory>/<host>-<timestamp>.png", creating the directory.
+  QString buildOutputPath(const QString &directory) const;
 
   /// Whether we are running under a Wayland session (grabWindow does not work there).
   static bool isWayland();

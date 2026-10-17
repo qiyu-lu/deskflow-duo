@@ -17,6 +17,7 @@
 #include "dialogs/ClientConfigDialog.h"
 #include "dialogs/FingerprintDialog.h"
 #include "dialogs/HelpDialog.h"
+#include "dialogs/ScreenshotLocationDialog.h"
 #include "dialogs/ServerConfigDialog.h"
 #include "dialogs/SettingsDialog.h"
 
@@ -38,9 +39,12 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QDesktopServices>
+#include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QLocale>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -61,6 +65,11 @@
 #endif
 
 using namespace deskflow::gui;
+
+namespace {
+// a successful capture is routine, keep its notification short
+const int kScreenshotNotificationMs = 4000;
+} // namespace
 
 MainWindow::MainWindow()
     : ui{std::make_unique<Ui::MainWindow>()},
@@ -312,8 +321,11 @@ void MainWindow::connectSlots()
       &m_coreProcess, &CoreProcess::keyboardBroadcastStateChanged, this, &MainWindow::keyboardBroadcastStateChanged
   );
   connect(&m_coreProcess, &CoreProcess::inputBroadcastStateChanged, this, &MainWindow::inputBroadcastStateChanged);
-  connect(&m_coreProcess, &CoreProcess::screenshotRequested, this, [this] {
-    m_screenshotService->capture(m_syncManager->folderPath());
+  connect(&m_coreProcess, &CoreProcess::screenshotRequested, this, &MainWindow::captureScreenshot);
+  connect(m_screenshotService, &ScreenshotService::failed, this, [this](const QString &message) {
+    m_trayIcon->showMessage(
+        kAppName, tr("The screenshot could not be saved: %1.").arg(message), QSystemTrayIcon::Warning
+    );
   });
 
   connect(&m_coreProcess, &CoreProcess::unrecognisedClient, this, &MainWindow::handleUnrecognisedClient);
@@ -376,6 +388,10 @@ void MainWindow::connectSlots()
   connect(m_overviewPage, &OverviewPage::mouseBroadcastToggled, this, &MainWindow::requestMouseBroadcast);
   connect(m_overviewPage, &OverviewPage::keyboardBroadcastToggled, this, &MainWindow::requestKeyboardBroadcast);
   connect(m_overviewPage, &OverviewPage::openFolderRequested, this, &MainWindow::openSyncFolder);
+  connect(
+      m_overviewPage, &OverviewPage::changeScreenshotLocationRequested, this, &MainWindow::changeScreenshotLocation
+  );
+  connect(m_overviewPage, &OverviewPage::openScreenshotFolderRequested, this, &MainWindow::openScreenshotFolder);
   connect(m_overviewPage, &OverviewPage::openSyncthingUiRequested, this, &MainWindow::openSyncthingUi);
   connect(m_overviewPage, &OverviewPage::showFullUiRequested, this, [this] { setSimpleView(false); });
   connect(m_overviewPage, &OverviewPage::pauseSyncRequested, this, [this](bool paused) {
@@ -1969,7 +1985,6 @@ void MainWindow::updateOverview()
   status.targetsText = ui->btnMouseBroadcastTargets->text();
   m_overviewPage->setInputStatus(status);
 
-  m_overviewPage->setSyncFolder(m_syncManager->folderPath());
   syncStateChanged();
 }
 
@@ -1979,6 +1994,88 @@ void MainWindow::syncStateChanged()
     return;
   }
   m_overviewPage->setSyncState(m_syncManager->summary(), m_syncManager->processState(), m_syncManager->isEnabled());
+  // the folder path follows Syncthing, so it can change with every new summary
+  const bool folderGone =
+      m_syncManager->isApiReachable() && m_syncManager->livePathOf(m_syncManager->folderId()).isEmpty();
+  m_overviewPage->setSyncFolder(m_syncManager->folderPath(), folderGone);
+  updateScreenshotLocation();
+}
+
+ScreenshotLocation MainWindow::screenshotLocation() const
+{
+  auto fallbackRoot = Settings::value(Settings::Screenshot::LastFolderPath).toString();
+  if (fallbackRoot.isEmpty()) {
+    fallbackRoot = m_syncManager->folderPath();
+  }
+  return ScreenshotLocation::resolve(
+      m_syncManager->summary(), Settings::value(Settings::Screenshot::FolderId).toString(),
+      Settings::value(Settings::Screenshot::Subfolder).toString(), fallbackRoot
+  );
+}
+
+void MainWindow::updateScreenshotLocation()
+{
+  const auto location = screenshotLocation();
+  if (location.folderFound()) {
+    // remember where Syncthing keeps the folder, for captures while it is not running
+    Settings::setValue(Settings::Screenshot::LastFolderPath, location.folderPath);
+  }
+  if (m_overviewPage) {
+    m_overviewPage->setScreenshotLocation(location, m_syncManager->isEnabled());
+  }
+}
+
+void MainWindow::captureScreenshot()
+{
+  const auto location = screenshotLocation();
+  const auto filePath = m_screenshotService->capture(location.directory);
+  if (filePath.isEmpty()) {
+    return; // the service reports the reason through its failed() signal
+  }
+
+  if (location.isSynced()) {
+    const auto fileName = QFileInfo(filePath).fileName();
+    const auto relative = QDir::toNativeSeparators(
+        location.subfolder.isEmpty() ? fileName : QStringLiteral("%1/%2").arg(location.subfolder, fileName)
+    );
+    m_trayIcon->showMessage(
+        kAppName,
+        tr("Screenshot saved as %1 in %2, it will be synced to %3.")
+            .arg(relative, location.folderLabel, QLocale().createSeparatedList(location.peerNames)),
+        QSystemTrayIcon::Information, kScreenshotNotificationMs
+    );
+    return;
+  }
+
+  const auto reason = ScreenshotService::notSyncedReason(location, m_syncManager->isEnabled());
+  qWarning("screenshot is not synced: %s", qPrintable(reason));
+  m_trayIcon->showMessage(
+      kAppName, tr("Screenshot saved to %1, but it is not synced: %2.").arg(QDir::toNativeSeparators(filePath), reason),
+      QSystemTrayIcon::Warning
+  );
+}
+
+void MainWindow::changeScreenshotLocation()
+{
+  ScreenshotLocationDialog dialog(m_syncManager->summary(), screenshotLocation(), this);
+  if (dialog.exec() != QDialog::Accepted || dialog.folderId().isEmpty()) {
+    return;
+  }
+
+  Settings::setValue(Settings::Screenshot::FolderId, dialog.folderId());
+  Settings::setValue(Settings::Screenshot::Subfolder, ScreenshotLocation::storedSubfolder(dialog.subfolder()));
+  Settings::setValue(Settings::Screenshot::LastFolderPath, dialog.folderPath());
+  updateScreenshotLocation();
+}
+
+void MainWindow::openScreenshotFolder()
+{
+  const auto directory = screenshotLocation().directory;
+  if (directory.isEmpty()) {
+    return;
+  }
+  QDir().mkpath(directory);
+  QDesktopServices::openUrl(QUrl::fromLocalFile(directory));
 }
 
 void MainWindow::toggleCoreFromOverview()
