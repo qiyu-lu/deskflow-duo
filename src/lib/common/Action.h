@@ -51,8 +51,10 @@ public:
     mousebutton,
     mouseBroadcast,
     keyboardBroadcast,
+    screenshot,
   };
   enum class SwitchDirection
+
   {
     left,
     right,
@@ -144,8 +146,10 @@ private:
       QStringLiteral("mouseUp"),
       QStringLiteral("mousebutton"),
       QStringLiteral("mouseBroadcast"),
-      QStringLiteral("keyboardBroadcast")
+      QStringLiteral("keyboardBroadcast"),
+      QStringLiteral("screenshot")
   };
+
 
   inline static const QStringList m_switchDirectionNames{
       QStringLiteral("left"), QStringLiteral("right"), QStringLiteral("up"), QStringLiteral("down")

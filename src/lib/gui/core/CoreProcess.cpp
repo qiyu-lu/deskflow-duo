@@ -640,7 +640,10 @@ void CoreProcess::onCoreIpcMessageReceived(const QString &command, const QString
       return;
     }
     Q_EMIT inputBroadcastStateChanged(modes);
+  } else if (command == "screenshot") {
+    Q_EMIT screenshotRequested();
   } else if (command == "secureSocket") {
+
     Q_EMIT secureSocket(true);
     if (args != m_secureSocketVersion) {
       m_secureSocketVersion = args;

@@ -88,7 +88,13 @@
          <string>Control keyboard broadcasting</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Take a screenshot into the sync folder</string>
+        </property>
+       </item>
       </widget>
+
      </item>
     </layout>
    </item>

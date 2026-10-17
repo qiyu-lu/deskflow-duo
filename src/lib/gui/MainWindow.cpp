@@ -93,8 +93,10 @@ MainWindow::MainWindow()
       m_actionConfigureClient{new QAction(this)},
       m_actionOpenSyncthingUi{new QAction(this)},
       m_networkMonitor{new NetworkMonitor(this)},
-      m_syncManager{new sync::SyncManager(this)}
+      m_syncManager{new sync::SyncManager(this)},
+      m_screenshotService{new ScreenshotService(this)}
 {
+
   ui->setupUi(this);
 
   setWindowIcon(QIcon::fromTheme(kRevFqdnName));
@@ -310,6 +312,10 @@ void MainWindow::connectSlots()
       &m_coreProcess, &CoreProcess::keyboardBroadcastStateChanged, this, &MainWindow::keyboardBroadcastStateChanged
   );
   connect(&m_coreProcess, &CoreProcess::inputBroadcastStateChanged, this, &MainWindow::inputBroadcastStateChanged);
+  connect(&m_coreProcess, &CoreProcess::screenshotRequested, this, [this] {
+    m_screenshotService->capture(m_syncManager->folderPath());
+  });
+
   connect(&m_coreProcess, &CoreProcess::unrecognisedClient, this, &MainWindow::handleUnrecognisedClient);
   connect(&m_coreProcess, &CoreProcess::connectionRefused, this, &MainWindow::handleConnectionRefused);
   connect(&m_coreProcess, &CoreProcess::retryIn, this, &MainWindow::updateTimeoutDelay);

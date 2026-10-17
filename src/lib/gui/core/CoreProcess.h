@@ -93,7 +93,9 @@ Q_SIGNALS:
   void mouseBroadcastStateChanged(bool enabled, const QStringList &targets, const QString &reason);
   void keyboardBroadcastStateChanged(bool enabled, const QStringList &targets, const QString &reason);
   void inputBroadcastStateChanged(int modes);
+  void screenshotRequested();
   void securityLevelChanged(QString securityLevel);
+
   void unrecognisedClient(const QString &clientName);
   void connectionRefused(deskflow::core::ConnectionRefusal reason);
   void retryIn(int seconds);

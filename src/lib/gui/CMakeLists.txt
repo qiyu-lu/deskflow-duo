@@ -33,8 +33,11 @@ add_library(${target} STATIC
   TlsUtility.h
   VersionChecker.cpp
   VersionChecker.h
+  capture/ScreenshotService.cpp
+  capture/ScreenshotService.h
   config/Screen.cpp
   config/Screen.h
+
   config/ScreenConfig.cpp
   config/ScreenConfig.h
   config/ScreenList.cpp

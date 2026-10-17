@@ -36,7 +36,9 @@ ActionDialog::ActionDialog(QWidget *parent, const ServerConfig &config, Hotkey &
       Action::Type::restartAllConnections,
       Action::Type::mouseBroadcast,
       Action::Type::keyboardBroadcast,
+      Action::Type::screenshot,
   };
+
   Q_ASSERT(ui->comboActionType->count() == static_cast<int>(actionTypes.size()));
   for (int i = 0; i < static_cast<int>(actionTypes.size()); ++i) {
     ui->comboActionType->setItemData(i, static_cast<int>(actionTypes.at(i)));

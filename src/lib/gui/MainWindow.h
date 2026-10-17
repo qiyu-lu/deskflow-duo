@@ -17,7 +17,9 @@
 
 #include "VersionChecker.h"
 #include "config/ServerConfig.h"
+#include "gui/capture/ScreenshotService.h"
 #include "gui/core/CoreProcess.h"
+
 #include "gui/core/NetworkMonitor.h"
 #include "gui/sync/SyncManager.h"
 #include "net/Fingerprint.h"
@@ -264,4 +266,6 @@ private:
   OverviewPage *m_overviewPage = nullptr;
   QStackedWidget *m_centralStack = nullptr;
   deskflow::gui::sync::SyncManager *m_syncManager = nullptr;
+  deskflow::gui::ScreenshotService *m_screenshotService = nullptr;
 };
+
