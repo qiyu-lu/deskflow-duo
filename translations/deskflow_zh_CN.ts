@@ -406,7 +406,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>Could not change the file sync state: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无法更改文件同步状态：%1</translation>
     </message>
     <message>
         <source>invalid certificate, generating a new one</source>
@@ -462,7 +462,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>Pair a computer...</source>
-        <translation type="unfinished"></translation>
+        <translation>配对新电脑...</translation>
     </message>
     <message>
         <source>Show full interface</source>
@@ -506,7 +506,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>the other computer</source>
-        <translation type="unfinished"></translation>
+        <translation>另一台电脑</translation>
     </message>
     <message>
         <source>Not set up yet. Pair a computer to get started.</source>
@@ -687,15 +687,15 @@ Additionally, check you are able to %1 the server config file: %2</source>
     </message>
     <message>
         <source>Don&apos;t show this again</source>
-        <translation type="unfinished"></translation>
+        <translation>不再显示</translation>
     </message>
     <message>
         <source>Missing Keyboard Layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>缺少键盘布局</translation>
     </message>
     <message>
         <source>&lt;p&gt;Keyboard layout support requires matching layouts on all computers. The following layouts from the other computer are not installed on this computer:&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please install them to enable support for these layouts.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;键盘布局支持要求所有电脑安装相同的布局。另一台电脑上的以下布局没有安装在本机：&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;请安装它们以启用这些布局。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Mouse broadcasting</source>
