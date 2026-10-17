@@ -863,6 +863,15 @@ void Config::parseAction(
     action = new InputFilter::SwitchToNextScreenAction(m_events);
   }
 
+  else if (name == "screenshot") {
+    if (!args.empty()) {
+      throw ServerConfigReadException(s, "syntax for action: screenshot");
+    }
+
+    action = new InputFilter::ScreenshotAction(m_events);
+  }
+
+
   else if (name == "lockCursorToScreen") {
     if (args.size() > 1) {
       throw ServerConfigReadException(s, "syntax for action: lockCursorToScreen([{off|on|toggle}])");

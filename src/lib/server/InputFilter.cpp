@@ -479,7 +479,30 @@ void InputFilter::MouseBroadcastAction::perform(const Event &event)
   );
 }
 
+InputFilter::ScreenshotAction::ScreenshotAction(IEventQueue *events) : m_events(events)
+{
+  // do nothing
+}
+
+InputFilter::Action *InputFilter::ScreenshotAction::clone() const
+{
+  return new ScreenshotAction(*this);
+}
+
+std::string InputFilter::ScreenshotAction::format() const
+{
+  return "screenshot()";
+}
+
+void InputFilter::ScreenshotAction::perform(const Event &event)
+{
+  m_events->addEvent(
+      Event(EventTypes::ServerScreenshot, event.getTarget(), nullptr, Event::EventFlags::DeliverImmediately)
+  );
+}
+
 InputFilter::KeystrokeAction::KeystrokeAction(IEventQueue *events, IPlatformScreen::KeyInfo *info, bool press)
+
     : m_keyInfo(info),
       m_press(press),
       m_events(events)

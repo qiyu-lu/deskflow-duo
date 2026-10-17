@@ -280,7 +280,25 @@ public:
     IEventQueue *m_events;
   };
 
+  // ScreenshotAction
+  // Asks the GUI (over IPC) to capture the screen into the synced folder.
+  // Takes no arguments; fires once each time its hotkey is pressed.
+  class ScreenshotAction : public Action
+  {
+  public:
+    explicit ScreenshotAction(IEventQueue *events);
+
+    // Action overrides
+    Action *clone() const override;
+    std::string format() const override;
+    void perform(const Event &) override;
+
+  private:
+    IEventQueue *m_events;
+  };
+
   // KeystrokeAction
+
   class KeystrokeAction : public Action
   {
   public:

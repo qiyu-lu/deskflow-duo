@@ -149,6 +149,10 @@ Server::Server(ServerConfig &config, PrimaryClient *primaryClient, deskflow::Scr
   m_events->addHandler(EventTypes::ServerLockCursorToScreen, m_inputFilter, [this](const auto &e) {
     handleLockCursorToScreenEvent(e);
   });
+  m_events->addHandler(EventTypes::ServerScreenshot, m_inputFilter, [this](const auto &e) {
+    handleScreenshotEvent(e);
+  });
+
   m_events->addHandler(EventTypes::PrimaryScreenFakeInputBegin, m_inputFilter, [this](const auto &) {
     m_primaryClient->fakeInputBegin();
   });
@@ -195,6 +199,8 @@ Server::~Server()
   m_events->removeHandler(PrimaryScreenFakeInputEnd, m_inputFilter);
   m_events->removeHandler(ServerKeyboardBroadcast, m_inputFilter);
   m_events->removeHandler(ServerMouseBroadcast, m_inputFilter);
+  m_events->removeHandler(ServerScreenshot, m_inputFilter);
+
   m_events->removeHandler(Timer, this);
   stopSwitch();
 
@@ -1522,6 +1528,15 @@ void Server::handleMouseBroadcastEvent(const Event &event)
 
   setMouseBroadcast(info->m_state, info->m_screens);
 }
+
+void Server::handleScreenshotEvent(const Event &)
+{
+  // The core has no framebuffer access of its own; ask the GUI to grab the
+  // screen and drop the image into the synchronised folder.
+  LOG_DEBUG("screenshot hotkey pressed; requesting capture from gui");
+  ipcSendToClient("screenshot");
+}
+
 
 void Server::setMouseBroadcast(MouseBroadcastInfo::State state, const std::string &screens)
 {

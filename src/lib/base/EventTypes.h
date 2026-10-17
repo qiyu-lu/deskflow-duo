@@ -156,8 +156,14 @@ enum class EventTypes : uint32_t
   */
   ServerLockCursorToScreen,
 
+  /** This event asks the GUI to capture the screen and save it into the
+      synchronised folder. It carries no event data.
+  */
+  ServerScreenshot,
+
   /// This event is sent when the computer has been switched to a client.
   ServerScreenSwitched,
+
 
   ServerAppReloadConfig,
   ServerAppForceReconnect,

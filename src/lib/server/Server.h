@@ -371,6 +371,8 @@ private:
   void handleKeyboardBroadcastEvent(const Event &event);
   void handleMouseBroadcastEvent(const Event &event);
   void handleLockCursorToScreenEvent(const Event &event);
+  void handleScreenshotEvent(const Event &event);
+
 
   bool isMouseBroadcastTarget(const std::string &name) const;
   bool isMouseBroadcastTarget(const std::string &name, const std::string &screens) const;
