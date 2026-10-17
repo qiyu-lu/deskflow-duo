@@ -13,6 +13,18 @@
 #include <QScreen>
 #include <QSysInfo>
 
+#ifdef Q_OS_LINUX
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusObjectPath>
+#include <QDBusReply>
+#include <QEventLoop>
+#include <QFile>
+#include <QTimer>
+#include <QUrl>
+#endif
+
+
 namespace deskflow::gui {
 
 ScreenshotService::ScreenshotService(QObject *parent) : QObject(parent)
@@ -79,17 +91,10 @@ QString ScreenshotService::capture(const QString &folderPath)
     return {};
   }
 
-  if (isWayland()) {
-    // Wayland blocks silent framebuffer grabs by design; a compositor-specific
-    // path is added separately. Fail clearly rather than writing a black image.
-    const QString message = tr("silent capture on Wayland is not supported yet");
-    qWarning("screenshot capture skipped: %s", qPrintable(message));
-    Q_EMIT failed(message);
-    return {};
-  }
-
   QString error;
-  if (!saveWithQtGrab(filePath, error)) {
+  const bool ok = isWayland() ? saveOnWayland(filePath, error) : saveWithQtGrab(filePath, error);
+  if (!ok) {
+
     qWarning("screenshot capture failed: %s", qPrintable(error));
     Q_EMIT failed(error);
     return {};
@@ -100,4 +105,98 @@ QString ScreenshotService::capture(const QString &folderPath)
   return filePath;
 }
 
+bool ScreenshotService::saveOnWayland(const QString &filePath, QString &errorOut)
+{
+#ifdef Q_OS_LINUX
+  QDBusConnection bus = QDBusConnection::sessionBus();
+  if (!bus.isConnected()) {
+    errorOut = tr("session D-Bus is not available");
+    return false;
+  }
+
+  QDBusInterface portal(
+      QStringLiteral("org.freedesktop.portal.Desktop"), QStringLiteral("/org/freedesktop/portal/desktop"),
+      QStringLiteral("org.freedesktop.portal.Screenshot"), bus
+  );
+  if (!portal.isValid()) {
+    errorOut = tr("the screenshot portal is not available");
+    return false;
+  }
+
+  QVariantMap options;
+  // interactive=false asks the portal to capture without any picker UI. On
+  // GNOME this is silent; KDE may show a one-time permission it then remembers.
+  options.insert(QStringLiteral("interactive"), false);
+  options.insert(QStringLiteral("handle_token"), QStringLiteral("deskflow_%1").arg(QDateTime::currentMSecsSinceEpoch()));
+
+  QDBusReply<QDBusObjectPath> reply = portal.call(QStringLiteral("Screenshot"), QString(), options);
+  if (!reply.isValid()) {
+    errorOut = reply.error().message();
+    return false;
+  }
+  const QString requestPath = reply.value().path();
+
+  m_portalResponse = 1;
+  m_portalUri.clear();
+  QEventLoop loop;
+  m_portalLoop = &loop;
+
+  const bool connected = bus.connect(
+      QStringLiteral("org.freedesktop.portal.Desktop"), requestPath, QStringLiteral("org.freedesktop.portal.Request"),
+      QStringLiteral("Response"), this, SLOT(onPortalResponse(uint, QVariantMap))
+  );
+  if (!connected) {
+    m_portalLoop = nullptr;
+    errorOut = tr("could not listen for the screenshot portal response");
+    return false;
+  }
+
+  // Never block the GUI indefinitely if the portal never answers.
+  QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+  loop.exec();
+
+  bus.disconnect(
+      QStringLiteral("org.freedesktop.portal.Desktop"), requestPath, QStringLiteral("org.freedesktop.portal.Request"),
+      QStringLiteral("Response"), this, SLOT(onPortalResponse(uint, QVariantMap))
+  );
+  m_portalLoop = nullptr;
+
+  if (m_portalResponse != 0 || m_portalUri.isEmpty()) {
+    errorOut = tr("the screenshot portal declined the request or timed out");
+    return false;
+  }
+
+  const QString tempFile = QUrl(m_portalUri).toLocalFile();
+  if (tempFile.isEmpty()) {
+    errorOut = tr("the screenshot portal returned an unusable location");
+    return false;
+  }
+
+  QFile::remove(filePath);
+  if (!QFile::copy(tempFile, filePath)) {
+    errorOut = tr("could not copy the portal screenshot to %1").arg(filePath);
+    return false;
+  }
+  QFile::remove(tempFile);
+  return true;
+#else
+  Q_UNUSED(filePath)
+  errorOut = tr("Wayland capture is only available on Linux");
+  return false;
+#endif
+}
+
+void ScreenshotService::onPortalResponse(uint response, const QVariantMap &results)
+{
+  m_portalResponse = response;
+  const auto it = results.constFind(QStringLiteral("uri"));
+  if (it != results.constEnd()) {
+    m_portalUri = it.value().toString();
+  }
+  if (m_portalLoop != nullptr) {
+    m_portalLoop->quit();
+  }
+}
+
 } // namespace deskflow::gui
+

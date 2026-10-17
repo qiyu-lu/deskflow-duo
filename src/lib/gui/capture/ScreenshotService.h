@@ -8,6 +8,10 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariantMap>
+
+class QEventLoop;
+
 
 namespace deskflow::gui {
 
@@ -38,6 +42,10 @@ Q_SIGNALS:
   void captured(const QString &filePath);
   void failed(const QString &message);
 
+private Q_SLOTS:
+  /// Receives the XDG screenshot portal's asynchronous Response signal.
+  void onPortalResponse(uint response, const QVariantMap &results);
+
 private:
   /// Build "<folderPath>/screenshots/<host>-<timestamp>.png", creating the dir.
   QString buildOutputPath(const QString &folderPath) const;
@@ -47,6 +55,17 @@ private:
 
   /// Silent full-screen grab for X11/Windows/macOS. Empty image on failure.
   bool saveWithQtGrab(const QString &filePath, QString &errorOut) const;
+
+  /// Capture via the XDG desktop portal (Wayland). Silent on GNOME with
+  /// interactive=false; KDE may show a one-time permission prompt.
+  bool saveOnWayland(const QString &filePath, QString &errorOut);
+
+  // Transient state used only while a portal request is in flight. The capture
+  // is driven from the GUI thread one request at a time, so plain members are safe.
+  QEventLoop *m_portalLoop = nullptr;
+  uint m_portalResponse = 1;
+  QString m_portalUri;
 };
+
 
 } // namespace deskflow::gui

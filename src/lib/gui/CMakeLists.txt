@@ -146,3 +146,8 @@ target_link_libraries(${target}
     Qt6::Widgets
     Qt6::Network
 )
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(${target} PUBLIC Qt6::DBus)
+endif()
+
