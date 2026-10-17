@@ -12,13 +12,21 @@
 
 在两台电脑上都安装同一个版本。从 Release 页面下载对应平台的安装包，不要下载自动生成的 `Source code`。
 
-- Windows：解压 ZIP 后运行 `.msi`。
-- Ubuntu DEB：`sudo apt install ./deskflow-*.deb`。
-- Ubuntu Flatpak：`flatpak install --user ./deskflow-*.flatpak`，然后 `flatpak run org.deskflow.deskflow`。
+- Windows：运行 `.msi` 安装；便携版解压 `.7z` 后直接运行 `deskflow.exe`。
+- Ubuntu 26.04：`sudo apt install ./deskflow-*.deb`。DEB 依赖 Qt 6.10，24.04 及更早的版本装不上，请用 Flatpak。
+- 其他 Linux（包括 Ubuntu 20.04 / 22.04 / 24.04）：`flatpak install --user ./deskflow-*.flatpak`，然后 `flatpak run org.deskflow.deskflow`。已装过旧版 Flatpak 时同一条命令直接升级，配置保留；若提示已安装，加上 `--reinstall`。
 
 Ubuntu 上作为主机（接键盘鼠标的那台）时需要 X11 会话：登录界面点击用户名后，在右下角选择 "Ubuntu on Xorg"。可以用 `echo $XDG_SESSION_TYPE` 确认当前是 `x11`。
 
 安装包里已经带了 Syncthing，不需要再单独安装。它使用自己的配置目录和端口，不会影响你已经装好的 Syncthing。
+
+## 已经装过 Deskflow 或 Syncthing？
+
+不需要卸载任何东西，两台电脑都直接装新版即可。
+
+- **旧版 Deskflow**（官方版或本仓库的 0.2.0）：新版覆盖安装，原来的配置保留。首页会显示"配对新电脑"，不想重新配对可以点"我已经有配置，显示完整界面"，继续用原来的设置。重新配对会按新布局改写服务端配置（两台电脑左右相邻）和副机的主机地址，证书互信只增不减。
+- **已经在用的 Syncthing**：照常运行即可。内置的 Syncthing 是独立的一份：配置目录在 Deskflow 配置目录下的 `syncthing`，设备 ID 和原来的不同，网页界面用 8386 端口而不是 8384，同步端口 22000 被占用时会自动换一个。它只负责 `DeskflowSync` 目录，不会碰原来的同步目录，两份可以长期并存。以后想只留一份，在"文件同步高级设置"里把原来的目录加进来，再停掉原来的 Syncthing 即可。
+- 两份 Syncthing 同时运行时，本机只有一份能收到局域网发现广播（UDP 21027）。配对时两台电脑会直接交换同步地址，所以不依赖自动发现也能在局域网内直连。
 
 ## 配对
 
@@ -49,9 +57,9 @@ Ubuntu 上作为主机（接键盘鼠标的那台）时需要 X11 会话：登�
 
 - 两边版本必须一致。版本不同时配对会直接提示。
 - 两台电脑的名字不能相同。名字默认取主机名，可以在"高级 → 显示完整界面"里修改。
-- 副机连不上主机：确认两台电脑在同一个局域网，主机的防火墙放行了 Deskflow（端口 24800）和配对端口 24802。Windows 安装包已经添加了防火墙规则。
-- 文件不同步：先看主界面"文件同步"一栏的提示；如果提示找不到 Syncthing 程序，说明安装包不完整，重新安装即可。局域网内两边互相发现需要 UDP 21027 端口，Windows 安装包同样已放行。
-- 重新安装时不要删除配置目录（Ubuntu 是 `~/.config/Deskflow`，Windows 是 `%AppData%\Deskflow`），里面的 `syncthing` 子目录保存着同步身份，删掉就需要重新配对。
+- 副机连不上主机：确认两台电脑在同一个局域网，主机的防火墙放行了 Deskflow（端口 24800）和配对端口 24802。Windows 安装包（`.msi`）已经添加了防火墙规则，便携版第一次监听时按 Windows 弹出的提示点"允许访问"。
+- 文件不同步：先看主界面"文件同步"一栏的提示；如果提示找不到 Syncthing 程序，说明安装包不完整，重新安装即可。局域网内两边互相发现需要 UDP 21027 端口，Windows 安装包同样已放行。提示里出现 `address already in use` 说明同步端口被别的程序占了，在"文件同步高级设置"里改一个监听端口即可。
+- 重新安装时不要删除配置目录（Ubuntu DEB 是 `~/.config/Deskflow`，Flatpak 是 `~/.var/app/org.deskflow.deskflow/config/Deskflow`，Windows 是 `C:\ProgramData\Deskflow`），里面的 `syncthing` 子目录保存着同步身份，删掉就需要重新配对。
 - 想换角色或换一台电脑，直接再点"重新配对"。
 
 ## 排查日志

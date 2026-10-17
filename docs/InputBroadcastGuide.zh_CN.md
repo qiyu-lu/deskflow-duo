@@ -4,7 +4,7 @@
 
 ## 下载与安装
 
-从 [Input Broadcast Preview 0.2.0](https://github.com/qiyu-lu/deskflow/releases/tag/input-broadcast-v0.2.0) 下载对应平台的 ZIP：
+从 [Input Broadcast Preview 0.2.0](https://github.com/qiyu-lu/deskflow-duo/releases/tag/input-broadcast-v0.2.0) 下载对应平台的 ZIP：
 
 - Windows：`deskflow-input-broadcast-v0.2.0-windows-x64.zip`
 - Ubuntu DEB：`deskflow-input-broadcast-v0.2.0-ubuntu-x64.zip`
